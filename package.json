@@ -17,6 +17,7 @@
     "@tiptap/extension-placeholder": "^3.14.0",
     "@tiptap/react": "^3.14.0",
     "@tiptap/starter-kit": "^3.14.0",
+    "@upstash/redis": "^1.37.0",
     "bullmq": "^5.71.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

@@ -6,6 +6,7 @@ import { authOptions } from "../auth/[...nextauth]/route";
 import { getSignedProfileImage } from "@/actions/getSignedProfileImage";
 import { getSignedPostImage } from "@/actions/getSignedPostImage";
 import Comment from "@/models/Comment";
+import Post from "@/models/Post";
 
 const AGGREGATE_TYPES = ["POST_LIKE", "COMMENT_LIKE"];
 

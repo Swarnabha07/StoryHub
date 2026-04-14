@@ -8,6 +8,7 @@ import { getSignedPostImage } from "@/actions/getSignedPostImage";
 import { generateExcerpt } from "@/lib/posts/generateExcerpt";
 import { generateTagsFromContent } from "@/lib/posts/generateTags";
 import { calculateReadingTime } from "@/lib/posts/calculateReadingTime";
+import { sanitizePostHtml } from "@/lib/security/sanitizeHtml";
 
 //UPDATE PARTIAL POST
 export async function PATCH(req, { params }) {
@@ -83,17 +84,19 @@ export async function PATCH(req, { params }) {
       );
     }
 
+    const cleanContent =
+      content !== undefined ? sanitizePostHtml(content) : post.content;
+
     // 8️ Apply updates
     if (title !== undefined) post.title = title.trim();
     if (content !== undefined) {
-      post.content = content;
-      post.excerpt = generateExcerpt(content);
-      post.readingTime = calculateReadingTime(content);
+      post.content = cleanContent;
+      post.excerpt = generateExcerpt(cleanContent);
+      post.readingTime = calculateReadingTime(cleanContent);
     }
     if (title !== undefined || content !== undefined) {
       const finalTitle = title ?? post.title;
-      const finalContent = content ?? post.content;
-      post.tags = generateTagsFromContent(finalContent, finalTitle);
+      post.tags = generateTagsFromContent(cleanContent, finalTitle);
     }
     if (coverImagePath !== undefined) post.coverImagePath = coverImagePath;
 

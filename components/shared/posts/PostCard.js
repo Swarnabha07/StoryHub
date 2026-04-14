@@ -4,6 +4,7 @@ import LikeButton from "./LikeButton";
 import BookmarkButton from "./BookmarkButton";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import DOMPurify from "dompurify";
 
 export default function PostCard({ post, bookmarkedSet }) {
   const { data: session } = useSession();
@@ -67,7 +68,9 @@ export default function PostCard({ post, bookmarkedSet }) {
 
           <p
             className="text-sm text-[#6b625e] mt-2 line-clamp-3"
-            dangerouslySetInnerHTML={{ __html: post.excerpt || post.content }}
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(post.excerpt || post.content),
+            }}
           ></p>
         </div>
 

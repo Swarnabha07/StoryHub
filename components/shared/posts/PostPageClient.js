@@ -13,6 +13,7 @@ import LikeButton from "./LikeButton";
 import BookmarkButton from "./BookmarkButton";
 import FollowButton from "../profile/FollowButton";
 import { useRouter } from "next/navigation";
+import DOMPurify from "dompurify";
 
 const PostPageClient = ({ post }) => {
   const { isSidebarOpen, setIsSidebarOpen } = useStore();
@@ -155,7 +156,7 @@ const PostPageClient = ({ post }) => {
         {/* Content */}
         <article
           className="prose prose-lg max-w-none prose-headings:text-[#1f1f1f]"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
         />
       </main>
     </div>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import DOMPurify from "dompurify";
 
 export default function PostResultCard({ post }) {
   const router = useRouter();
@@ -58,7 +59,7 @@ export default function PostResultCard({ post }) {
           <p
             className="text-md text-[#6b625e] mt-2"
             dangerouslySetInnerHTML={{
-              __html: post.excerpt || post.content,
+              __html: DOMPurify.sanitize(post.excerpt || post.content),
             }}
           ></p>
         </div>

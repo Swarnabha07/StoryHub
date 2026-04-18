@@ -24,7 +24,7 @@ export default function PostCard({ post, bookmarkedSet }) {
       onKeyDown={(e) => {
         if (e.key === "Enter") router.push(`/posts/${post.slug}`);
       }}
-      className="post bg-[#FFFDF9] border border-[#f0ebe7] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer w-full md:w-3/4 min-h-[300px] max-h-[340px] flex flex-col justify-between"
+      className="post bg-[#FFFDF9] border border-[#f0ebe7] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer w-full md:w-3/4 min-h-[280px] max-h-[340px] flex flex-col justify-between"
     >
       {/* Profile */}
       <div className="flex items-center gap-2 mb-3">
@@ -44,7 +44,7 @@ export default function PostCard({ post, bookmarkedSet }) {
             height={30}
             width={30}
             alt="profile"
-            className="rounded-full border object-cover border-[#e8e2dd] p-1 bg-white h-[60px] w-[60px]"
+            className="rounded-full border object-cover border-[#e8e2dd] p-1 bg-white h-[45px] w-[45px] md:h-[60px] md:w-[60px]"
           />
         </Link>
         <Link
@@ -52,7 +52,7 @@ export default function PostCard({ post, bookmarkedSet }) {
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className="text-sm font-medium text-[#5A2A27] tracking-tight truncate hover:underline"
+          className="text-xs md:text-sm font-medium text-[#5A2A27] tracking-tight truncate hover:underline"
         >
           {post.author.username}
         </Link>
@@ -62,12 +62,12 @@ export default function PostCard({ post, bookmarkedSet }) {
       <div className="flex gap-4 items-start">
         {/* Text content */}
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-[#1f1f1f] leading-snug hover:text-[#5A2A27] transition-colors duration-200 line-clamp-2">
+          <h3 className="text-base md:text-lg font-semibold text-[#1f1f1f] leading-snug hover:text-[#5A2A27] transition-colors duration-200 line-clamp-2">
             {post.title}
           </h3>
 
           <p
-            className="text-sm text-[#6b625e] mt-2 line-clamp-3"
+            className="text-xs md:text-sm text-[#6b625e] mt-2 line-clamp-3"
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(post.excerpt || post.content),
             }}
@@ -77,7 +77,7 @@ export default function PostCard({ post, bookmarkedSet }) {
         {/* Right side cover image */}
         {typeof post.coverImageUrl === "string" &&
           post.coverImageUrl.length > 0 && (
-            <div className="w-[110px] h-20 shrink-0 overflow-hidden rounded-sm border border-[#f0ebe7]">
+            <div className="w-[95px] h-15 md:w-[110px] md:h-20 shrink-0 overflow-hidden rounded-sm border border-[#f0ebe7]">
               <Image
                 src={post.coverImageUrl}
                 alt="Post cover"
@@ -91,7 +91,7 @@ export default function PostCard({ post, bookmarkedSet }) {
       </div>
 
       {/* Bottom Actions */}
-      <div className="flex justify-between items-center mt-4 text-sm text-[#6b625e]">
+      <div className="flex justify-between items-center mt-4 text-xs md:text-sm text-[#6b625e]">
         <h5 className="font-medium px-1 py-1 rounded-full">
           {post.publishedDate}
         </h5>

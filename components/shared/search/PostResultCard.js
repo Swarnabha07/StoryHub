@@ -52,12 +52,12 @@ export default function PostResultCard({ post }) {
       <div className="flex gap-4 items-start">
         {/* Text content */}
         <div className="flex-1">
-          <h3 className="text-xl font-bold text-[#1f1f1f] leading-snug hover:text-[#5A2A27] transition-colors duration-200 line-clamp-1">
+          <h3 className="text-sm md:text-xl font-bold text-[#1f1f1f] leading-snug hover:text-[#5A2A27] transition-colors duration-200 line-clamp-1">
             {post.title}
           </h3>
 
           <p
-            className="text-md text-[#6b625e] mt-2"
+            className="text-xs md:text-base text-[#6b625e] mt-2"
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(post.excerpt || post.content),
             }}
@@ -67,7 +67,7 @@ export default function PostResultCard({ post }) {
         {/* Right side cover image */}
         {typeof post.coverImageUrl === "string" &&
           post.coverImageUrl.length > 0 && (
-            <div className="w-[110px] h-20 shrink-0 overflow-hidden rounded-sm border border-[#f0ebe7]">
+            <div className="w-[95px] h-15 md:w-[110px] md:h-20 shrink-0 overflow-hidden rounded-sm border border-[#f0ebe7]">
               <Image
                 src={post.coverImageUrl}
                 alt="Post cover"
@@ -79,7 +79,7 @@ export default function PostResultCard({ post }) {
             </div>
           )}
       </div>
-      <div className="flex justify-between items-center text-sm text-[#6b625e] my-4">
+      <div className="flex justify-between items-center text-[10px] md:text-sm text-[#6b625e] my-4">
         <h5 className="font-medium">{post.publishedDate}</h5>
       </div>
     </div>

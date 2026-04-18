@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer className="bg-[#FFFDF9] flex items-center justify-center px-4 h-16">
       <p className="text-center">
-        Copyright &copy; {currentYear} Get me A Chai - All rights reserved!
+        Copyright &copy; {currentYear} StoryHub - All rights reserved!
       </p>
     </footer>
   );

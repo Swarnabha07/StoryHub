@@ -11,6 +11,7 @@ import Sidebar from "@/components/layout/Sidebar";
 import { useStore } from "@/Store/store";
 import { useSession } from "next-auth/react";
 import { Bounce, ToastContainer, toast } from "react-toastify";
+import Image from "next/image";
 
 export default function PostEditor({ initialPost }) {
   const { data: session, status } = useSession();
@@ -182,10 +183,13 @@ export default function PostEditor({ initialPost }) {
       <div className="max-w-3xl mx-auto px-4 py-10 space-y-6">
         {/* Cover Preview */}
         {coverImageUrl && (
-          <img
+          <Image
             src={coverImageUrl}
             alt="Cover"
-            className="w-full h-64 object-cover rounded-xl border"
+            width={220}
+            height={160}
+            unoptimized
+            className="w-full h-40 md:h-64 object-cover rounded-xl border"
           />
         )}
 

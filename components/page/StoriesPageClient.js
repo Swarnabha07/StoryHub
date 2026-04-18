@@ -160,8 +160,10 @@ export default function StoriesPageClient() {
         )}
       </AnimatePresence>
 
-      <main className="w-3/4 mx-auto px-4 py-6">
-        <h1 className={`text-3xl ${lora.className} mb-6`}>Your Stories</h1>
+      <main className="w-full md:w-3/4 mx-auto px-4 py-6">
+        <h1 className={`text-xl md:text-3xl ${lora.className} mb-6`}>
+          Your Stories
+        </h1>
 
         {/* Tabs */}
         <div className="flex gap-4 border-b mb-6">
@@ -169,7 +171,7 @@ export default function StoriesPageClient() {
             <button
               key={tab}
               onClick={() => handleTabChange(tab)}
-              className={`pb-2 capitalize ${
+              className={`pb-2 capitalize text-sm md:text-base ${
                 activeTab === tab
                   ? "border-b-2 border-black font-medium"
                   : "text-gray-500"
@@ -201,7 +203,7 @@ export default function StoriesPageClient() {
         {hasMore && (
           <div
             ref={sentinelRef}
-            className="h-10 flex items-center justify-center text-sm opacity-60"
+            className="h-10 flex items-center justify-center text-xs md:text-sm opacity-60"
           >
             {loading && (
               <div className="w-5 h-5 border-2 border-[#5A2A27] border-t-transparent rounded-full animate-spin" />

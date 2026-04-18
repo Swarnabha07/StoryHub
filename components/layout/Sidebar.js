@@ -22,7 +22,7 @@ export default function Sidebar() {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: -250, opacity: 1 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="fixed top-0 left-0 h-full lg:w-1/5 w-1/2 bg-[#FFFDF9] border-r border-[#f0ebe7] px-5 py-7 flex flex-col justify-between z-50 shadow-xl"
+      className="fixed top-0 left-0 h-full lg:w-1/5 md:w-1/2 w-2/3 bg-[#FFFDF9] border-r border-[#f0ebe7] px-5 py-7 flex flex-col justify-between z-50 shadow-xl"
     >
       <button
         onClick={() => setIsSidebarOpen(false)}

@@ -36,7 +36,7 @@ export default function RichTextEditor({ content, onChange }) {
   if (!editor) return null;
 
   return (
-    <div className={`rounded-xl ${lora.className}`}>
+    <div className={`rounded-xl text-xs md:text-base ${lora.className}`}>
       <EditorContent editor={editor} />
     </div>
   );

@@ -180,7 +180,7 @@ export default function PostEditor({ initialPost }) {
           </>
         )}
       </AnimatePresence>
-      <div className="max-w-3xl mx-auto px-4 py-10 space-y-6">
+      <div className="max-w-5xl mx-auto px-4 py-10 space-y-6">
         {/* Cover Preview */}
         {coverImageUrl && (
           <Image

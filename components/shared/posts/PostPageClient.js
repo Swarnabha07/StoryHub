@@ -40,11 +40,12 @@ const PostPageClient = ({ post }) => {
           </>
         )}
       </AnimatePresence>
-      <main className="max-w-3xl mx-auto px-6 py-14">
+
+      <main className="w-full md:max-w-5xl mx-auto px-3 py-7 md:px-6 md:py-14">
         {/* Author */}
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex items-center justify-between mb-6 md:mb-10 gap-4">
           {/* Left: Author Info */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4 min-w-0">
             <Link href={`/profile/${post.author.username}`}>
               <Image
                 src={
@@ -53,20 +54,22 @@ const PostPageClient = ({ post }) => {
                     : "/defaultAvatar.png"
                 }
                 alt="Author avatar"
-                width={48}
-                height={48}
+                width={50}
+                height={50}
                 unoptimized
-                className="rounded-full border object-cover h-20 w-20"
+                className="rounded-full border object-cover h-12 w-12 md:h-16 md:w-16 lg:h-20 lg:w-20"
               />
             </Link>
 
             <div>
-              <p className="font-medium text-[#1f1f1f] hover:underline">
+              <p className="font-medium text-sm md:text-base text-[#1f1f1f] hover:underline">
                 <Link href={`/profile/${post.author.username}`}>
                   {post.author.name}
                 </Link>
               </p>
-              <p className="text-sm text-[#6b625e]">{post.author.username}</p>
+              <p className="text-xs md:text-sm text-[#6b625e] truncate max-w-[120px] md:max-w-none">
+                {post.author.username}
+              </p>
             </div>
           </div>
 
@@ -77,7 +80,7 @@ const PostPageClient = ({ post }) => {
             <FollowButton
               userId={post.author._id}
               initialIsFollowing={post.isFollowing}
-              className={`px-5 py-2 text-sm font-medium`}
+              className={`px-3 py-1.5 md:px-5 md:py-2 text-xs md:text-sm font-medium`}
             />
           )}
         </div>
@@ -86,7 +89,7 @@ const PostPageClient = ({ post }) => {
         {/* Meta Actions */}
         <div className="flex items-center justify-between my-4 text-sm text-[#6b625e]">
           {/* Left: Likes + Comments + Bookmark + Share Menu */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 md:gap-6 flex-wrap">
             {/* Likes */}
 
             <LikeButton
@@ -100,13 +103,12 @@ const PostPageClient = ({ post }) => {
               onClick={() => {
                 router.push(`/posts/${post.slug}/comments`);
               }}
-              className={`flex items-center gap-1 text-sm transition-colors duration-200 cursor-pointer text-gray-400 hover:text-[#C5A572]`}
+              className={`flex items-center gap-1 text-xs md:text-sm transition-colors duration-200 cursor-pointer text-gray-400 hover:text-[#C5A572]`}
             >
               <svg
+                className="h-5 w-5 md:h-6 md:w-6"
                 xmlns="http://www.w3.org/2000/svg"
-                height="24px"
                 viewBox="0 -960 960 960"
-                width="24px"
                 fill="currentColor"
               >
                 <path d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z" />
@@ -124,18 +126,20 @@ const PostPageClient = ({ post }) => {
           </div>
 
           {/* Right: Published Date + Reading Time */}
-          <div className="flex gap-4">
-            <span className="text-md text-[#8a7f7a]">
+          <div className="flex gap-3 md:gap-4 items-center text-[11px] md:text-base">
+            <span className="text-[11px] md:text-base text-[#8a7f7a]">
               {post.readingTime} min read
             </span>
-            ·
-            <span className="text-md text-[#8a7f7a]">{post.publishedDate}</span>
+            <span className="text-lg text-[#8a7f7a]">·</span>
+            <span className="text-[11px] md:text-base text-[#8a7f7a]">
+              {post.publishedDate}
+            </span>
           </div>
         </div>
         <div className="bg-black h-0.5 opacity-5"></div>
 
         {/* Title */}
-        <h1 className="text-3xl md:text-4xl font-bold leading-tight my-10">
+        <h1 className="text-2xl md:text-4xl font-bold leading-tight my-6 md:my-10">
           {post.title}
         </h1>
 
@@ -155,7 +159,7 @@ const PostPageClient = ({ post }) => {
 
         {/* Content */}
         <article
-          className="prose prose-lg max-w-none prose-headings:text-[#1f1f1f]"
+          className="prose prose-lg max-w-none prose-headings:text-[#1f1f1f] text-xs md:text-base wrap-break-word overflow-hidden"
           dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
         />
       </main>

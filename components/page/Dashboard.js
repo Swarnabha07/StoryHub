@@ -60,7 +60,7 @@ const Dashboard = () => {
     async function loadImages() {
       try {
         const res = await fetch(
-          `/api/profile/images/getsignedurl?userId=${session?.user?.id}`
+          `/api/profile/images/getsignedurl?userId=${session?.user?.id}`,
         );
         const data = await res.json();
 
@@ -83,7 +83,7 @@ const Dashboard = () => {
     if (!session?.user?.id) return;
 
     const res = await fetch(
-      `/api/profile/images/getsignedurl?userId=${session.user.id}`
+      `/api/profile/images/getsignedurl?userId=${session.user.id}`,
     );
     const data = await res.json();
 
@@ -187,8 +187,8 @@ const Dashboard = () => {
           </>
         )}
       </AnimatePresence>
-      <div className="w-full mx-auto flex flex-col items-center gap-10 pb-14">
-        <div className="images relative w-full h-[350px] flex flex-col items-center">
+      <div className="w-full mx-auto flex flex-col items-center gap-8 md:gap-10 pb-14">
+        <div className="images relative w-full h-[220px] md:h-[300px] lg:h-[350px] flex flex-col items-center">
           {/* ------------ COVER IMAGE -------------- */}
           <div className="relative w-full h-[350px] group">
             <AvatarUpload
@@ -203,12 +203,12 @@ const Dashboard = () => {
                   alt="Cover"
                   width={1200}
                   height={400}
-                  className="w-full h-[350px] object-cover"
+                  className="w-full h-[220px] md:h-[300px] lg:h-[350px] object-cover"
                   unoptimized
                 />
 
                 {/* Hover camera icon */}
-                <div className="absolute top-4 right-4 bg-black/60 p-2 rounded-full opacity-0 group-hover:opacity-100 transition">
+                <div className="absolute top-4 right-4 bg-black/60 p-2 rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition">
                   <Camera className="w-5 h-5 text-white" />
                 </div>
               </div>
@@ -216,24 +216,24 @@ const Dashboard = () => {
           </div>
 
           {/* ------------ PROFILE IMAGE -------------- */}
-          <div className="absolute -bottom-16 group">
+          <div className="absolute -bottom-10  md:-bottom-16 group">
             <AvatarUpload
               userId={session?.user?.id}
               field="profileImage"
               onDone={refreshSignedUrls}
               className="block"
             >
-              <div className="relative w-[150px] h-[150px]">
+              <div className="relative w-[100px] h-[100px] md:w-[150px] md:h-[150px]">
                 <Image
                   src={images.profileImage || "/defaultAvatar.png"}
                   alt="User avatar"
                   width={150}
                   height={150}
-                  className="rounded-full border-4 border-white shadow-xl object-cover w-[150px] h-[150px]"
+                  className="rounded-full border-4 border-white shadow-xl object-cover w-[100px] h-[100px] md:w-[150px] md:h-[150px]"
                   unoptimized
                 />
 
-                <div className="absolute bottom-2 right-2 bg-black/70 p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition">
+                <div className="absolute bottom-2 right-2 bg-black/70 p-1.5 rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition">
                   <Camera className="w-4 h-4 text-white" />
                 </div>
               </div>
@@ -242,7 +242,7 @@ const Dashboard = () => {
         </div>
 
         <form
-          className="inputContainer space-y-6 mt-14"
+          className="inputContainer w-full md:w-fit px-4 md:px-0 space-y-5 md:space-y-6 mt-8 md:mt-14"
           onSubmit={handleSubmit}
         >
           <div className="flex flex-col">
@@ -251,7 +251,7 @@ const Dashboard = () => {
               type="text"
               readOnly
               value={session?.user?.email ?? ""}
-              className="w-md bg-white text-left text-gray-800 px-4 py-3 rounded-xl shadow-sm border border-gray-300 
+              className="w-full md:w-[500px] bg-white text-left text-gray-800 px-4 py-3 rounded-xl shadow-sm border border-gray-300 
              focus:border-[#C5A572] focus:ring-2 focus:ring-[#C5A572]/40 focus:outline-none 
              placeholder:text-gray-400 transition"
             />
@@ -265,7 +265,7 @@ const Dashboard = () => {
               value={form.username ? form.username : ""}
               onChange={handleChange}
               placeholder="Enter username"
-              className="w-md bg-white text-left text-gray-800 px-4 py-3 rounded-xl shadow-sm border border-gray-300 
+              className="w-full md:w-[500px] bg-white text-left text-gray-800 px-4 py-3 rounded-xl shadow-sm border border-gray-300 
              focus:border-[#C5A572] focus:ring-2 focus:ring-[#C5A572]/40 focus:outline-none 
              placeholder:text-gray-400 transition"
             />
@@ -279,7 +279,7 @@ const Dashboard = () => {
               name="name"
               value={form.name ? form.name : ""}
               onChange={handleChange}
-              className="w-md bg-white text-left text-gray-800 px-4 py-3 rounded-xl shadow-sm border border-gray-300 
+              className="w-full md:w-[500px] bg-white text-left text-gray-800 px-4 py-3 rounded-xl shadow-sm border border-gray-300 
              focus:border-[#C5A572] focus:ring-2 focus:ring-[#C5A572]/40 focus:outline-none 
              placeholder:text-gray-400 transition"
             />
@@ -292,7 +292,7 @@ const Dashboard = () => {
               name="bio"
               onChange={handleChange}
               placeholder="Write something about you..."
-              className="w-md bg-white text-left text-gray-800 px-4 py-3 rounded-xl shadow-sm border border-gray-300 
+              className="w-full md:w-[500px] bg-white text-left text-gray-800 px-4 py-3 rounded-xl shadow-sm border border-gray-300 
              focus:border-[#C5A572] focus:ring-2 focus:ring-[#C5A572]/40 focus:outline-none 
              placeholder:text-gray-400 transition"
               rows="4"
@@ -300,9 +300,9 @@ const Dashboard = () => {
           </div>
 
           <button
-            className="bg-[#C5A572] text-white font-bold cursor-pointer w-md py-2 rounded-lg 
+            className="bg-[#C5A572] text-white font-bold cursor-pointer w-full md:w-[500px] py-2 rounded-lg 
              hover:bg-[#b89257] focus:ring-2 focus:ring-[#C5A572]/40 
-             focus:outline-none transition duration-200 text-2xl"
+             focus:outline-none transition duration-200 text-lg md:text-2xl"
           >
             Save
           </button>

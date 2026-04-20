@@ -21,6 +21,11 @@ export async function GET(req, { params }) {
     return NextResponse.json({ error: "Invalid type" }, { status: 400 });
   }
 
+  // Prevent accessing suggested users of other profiles
+  if (type === "suggested" && username !== session.user.username) {
+    return NextResponse.json({ error: "Not allowed" }, { status: 403 });
+  }
+
   let result;
 
   if (type === "followers" || type === "following") {

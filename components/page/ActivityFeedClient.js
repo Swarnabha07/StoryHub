@@ -123,15 +123,15 @@ export default function ActivityFeedClient() {
         )}
       </AnimatePresence>
 
-      <div className="flex flex-col items-center gap-6 w-3/4 mx-auto">
+      <div className="flex flex-col items-center gap-6 w-full max-w-6xl mx-auto px-2 md:px-0">
         <h2
-          className={`text-4xl font-bold border-b border-[#a1a1a1] py-2 my-4 ${lora.className}`}
+          className={`text-2xl md:text-4xl font-bold border-b border-[#a1a1a1] py-2 mt-4 mb-2 md:mb-4 ${lora.className} text-center`}
         >
           Notifications
         </h2>
 
         {/* Activities List */}
-        <div className="activities flex flex-col gap-3 w-3/4 mb-8">
+        <div className="activities flex flex-col gap-4 md:gap-6 px-2 md:px-0 w-full mt-2 md:mt-4 mb-8">
           {initialLoading ? (
             <div className="">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -140,7 +140,7 @@ export default function ActivityFeedClient() {
             </div>
           ) : activities.length === 0 ? (
             <p
-              className={`text-gray-400 text-center my-10 text-4xl ${lora.className} opacity-60`}
+              className={`text-gray-400 text-center my-10 text-xl md:text-4xl ${lora.className} opacity-60`}
             >
               No activities yet
             </p>

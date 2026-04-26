@@ -61,6 +61,7 @@ export default function PostOptionsMenu({ postId }) {
 
         <DropdownMenuContent align="end" className="w-44">
           <DropdownMenuItem
+            className=" text-xs md:text-base"
             onClick={() => {
               router.push(`/editor/${postId}`);
             }}
@@ -72,7 +73,7 @@ export default function PostOptionsMenu({ postId }) {
 
           <DropdownMenuItem
             onClick={handleDelete}
-            className="text-red-600 focus:text-red-600"
+            className="text-red-600 focus:text-red-600 text-xs md:text-base"
             disabled={isDeleting}
           >
             {isDeleting ? "Deleting..." : "Delete post"}

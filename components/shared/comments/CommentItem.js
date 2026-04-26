@@ -23,14 +23,10 @@ const CommentItem = ({
   onUpdateComment,
   setReplyingTo,
   setEditingComment,
-  depth = 0,
 }) => {
   return (
-    <div
-      id={id}
-      className={`comment-item w-full mt-8 ${depth > 0 ? "ml-6 border-l pl-4" : ""}`}
-    >
-      <div className="flex flex-col gap-1">
+    <div id={id} className={`comment-item w-full mt-4 md:mt-8 min-w-0 `}>
+      <div className="flex flex-col gap-1 min-w-0">
         <CommentHeader
           author={comment.author}
           postAuthor={postAuthor}
@@ -43,7 +39,11 @@ const CommentItem = ({
           isDeleted={comment.isDeleted}
         />
 
-        <CommentBody content={comment.content} isDeleted={comment.isDeleted} />
+        <CommentBody
+          content={comment.content}
+          isDeleted={comment.isDeleted}
+          parentAuthor={comment.parentAuthor}
+        />
 
         <CommentActions
           comment={comment}
@@ -90,7 +90,6 @@ const CommentItem = ({
         onUpdateComment={onUpdateComment}
         setReplyingTo={setReplyingTo}
         setEditingComment={setEditingComment}
-        depth={depth + 1}
       />
     </div>
   );

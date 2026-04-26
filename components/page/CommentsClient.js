@@ -32,6 +32,7 @@ export default function CommentsClient({ postId, postSlug, postAuthor }) {
   const [cursor, setCursor] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [tempHighlightId, setTempHighlightId] = useState(null);
 
   const { isSidebarOpen, setIsSidebarOpen } = useStore();
   const { data: session } = useSession();
@@ -59,11 +60,16 @@ export default function CommentsClient({ postId, postSlug, postAuthor }) {
 
   //For scroll highlight feature
   useEffect(() => {
-    if (!commentId) return;
-    if (hasHighlighted.current) return;
+    const isTemp = !!tempHighlightId;
+    const targetId = tempHighlightId || commentId;
+
+    if (!targetId) return;
+
+    //  only block activity highlight, not temp highlight
+    if (!isTemp && hasHighlighted.current) return;
 
     const timer = setTimeout(() => {
-      const el = document.getElementById(`comment-${commentId}`);
+      const el = document.getElementById(`comment-${targetId}`);
 
       if (!el) return;
 
@@ -74,15 +80,23 @@ export default function CommentsClient({ postId, postSlug, postAuthor }) {
 
       el.classList.add("highlight-comment");
 
-      hasHighlighted.current = true; // mark as done
+      //  mark only activity highlight as done
+      if (!isTemp) {
+        hasHighlighted.current = true;
+      }
 
       setTimeout(() => {
         el.classList.remove("highlight-comment");
+
+        //  cleanup only temp highlight
+        if (isTemp) {
+          setTempHighlightId(null);
+        }
       }, 3000);
     }, 300); // small delay for DOM + animation
 
     return () => clearTimeout(timer);
-  }, [flatComments, commentId]);
+  }, [flatComments, commentId, tempHighlightId]);
 
   //For pagination
   useEffect(() => {
@@ -122,15 +136,33 @@ export default function CommentsClient({ postId, postSlug, postAuthor }) {
     const map = {};
     const roots = [];
 
+    // First pass
     comments.forEach((comment) => {
-      map[comment._id] = { ...comment, children: [] };
+      map[comment._id] = {
+        ...comment,
+        children: [],
+        parentAuthor: null,
+      };
     });
 
     comments.forEach((comment) => {
-      if (comment.parentComment) {
-        map[comment.parentComment]?.children.push(map[comment._id]);
-      } else {
+      if (!comment.parentComment) {
         roots.push(map[comment._id]);
+        return;
+      }
+
+      let parent = map[comment.parentComment];
+
+      // climb up to ROOT
+      while (parent && parent.parentComment) {
+        parent = map[parent.parentComment];
+      }
+
+      if (parent) {
+        map[comment._id].parentAuthor =
+          map[comment.parentComment]?.author?.username;
+
+        parent.children.push(map[comment._id]);
       }
     });
 
@@ -200,6 +232,8 @@ export default function CommentsClient({ postId, postSlug, postAuthor }) {
   const handleAddReply = useCallback((newReply) => {
     setFlatComments((prev) => [newReply, ...prev]);
     setReplyingTo(null);
+    // trigger highlight
+    setTempHighlightId(newReply._id);
   }, []);
 
   //for editing a comment
@@ -256,22 +290,21 @@ export default function CommentsClient({ postId, postSlug, postAuthor }) {
         onClick={() => {
           router.push(`/posts/${postSlug}`);
         }}
-        className="flex gap-2 relative left-5 top-5 text-gray-600 hover:text-black font-semibold"
+        className="flex items-center gap-2 relative left-2.5 top-2.5 md:left-5 md:top-5 text-xs md:text-base text-gray-600 hover:text-black font-semibold"
       >
         <svg
+          className="h-4 w-4 md:h-6 md:w-6"
           xmlns="http://www.w3.org/2000/svg"
-          height="24px"
           viewBox="0 -960 960 960"
-          width="24px"
           fill="currentColor"
         >
           <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
         </svg>
         <p>Back to post</p>
       </button>
-      <div className="flex flex-col items-center gap-6 w-3/4 mx-auto mb-12">
+      <div className="flex flex-col items-center gap-6 px-4 md:px-0 w-full md:w-3/4 mx-auto mb-12">
         <h1
-          className={`text-4xl font-bold border-b border-[#a1a1a1] py-2 my-4 ${lora.className}`}
+          className={`text-2xl md:text-4xl font-bold border-b border-[#a1a1a1] py-2 my-4 ${lora.className}`}
         >
           Comments
         </h1>
@@ -286,7 +319,9 @@ export default function CommentsClient({ postId, postSlug, postAuthor }) {
             <CommentsSkeletonList count={5} />
           </div>
         ) : treeComments.length === 0 ? (
-          <p className={`text-gray-500 text-xl my-4 ${lora.className}`}>
+          <p
+            className={`text-gray-500 text-sm md:text-xl my-4 ${lora.className}`}
+          >
             No comments on this post yet.
           </p>
         ) : (

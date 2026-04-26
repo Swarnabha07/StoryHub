@@ -108,17 +108,17 @@ export default function CommentEditor({
               ? "Edit your comment..."
               : "Write a comment..."
         }
-        className="w-full border rounded p-2"
+        className="w-full border rounded p-2 text-sm md:text-base resize-none"
         rows={3}
       />
 
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
 
-      <div className="flex gap-2 mt-2">
+       <div className="flex flex-wrap gap-2 mt-2">
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className={`px-3 py-1 text-[#5A2A27] hover:bg-[#5A2A27] hover:text-[#FFFDF9] transition-colors duration-200 border font-semibold rounded ${loading ? "bg-[#5A2A27] text-[#FFFDF9]" : ""} disabled:cursor-not-allowed`}
+          className={`px-1.5 py-0.5 md:px-3 md:py-1 text-xs md:text-base text-[#5A2A27] hover:bg-[#5A2A27] hover:text-[#FFFDF9] transition-colors duration-200 border font-semibold rounded ${loading ? "bg-[#5A2A27] text-[#FFFDF9]" : ""} disabled:cursor-not-allowed`}
         >
           {loading ? "Posting..." : mode === "edit" ? "Save" : "Post"}
         </button>
@@ -126,7 +126,7 @@ export default function CommentEditor({
         {mode !== "new" && (
           <button
             onClick={onCancel}
-            className="px-3 py-1 border rounded font-semibold hover:bg-black hover:text-[#FFFDF9] transition-colors duration-200"
+            className="px-1.5 py-0.5 md:px-3 md:py-1 text-xs md:text-base border rounded font-semibold hover:bg-black hover:text-[#FFFDF9] transition-colors duration-200"
           >
             Cancel
           </button>

@@ -14,7 +14,7 @@ export default function CommentHeader({
   isDeleted,
 }) {
   return (
-    <div className="flex items-center gap-3 text-xl text-gray-600">
+    <div className="flex items-center gap-2 md:gap-3 text-xs md:text-xl text-gray-600 min-w-0">
       <Link
         href={`/profile/${author.username}`}
         onClick={(e) => {
@@ -31,7 +31,7 @@ export default function CommentHeader({
           height={30}
           width={30}
           alt="profile"
-          className="rounded-full object-cover h-[50px] w-[50px]"
+          className="rounded-full object-cover h-[28px] w-[28px] md:h-[50px] md:w-[50px] shrink-0"
         />
       </Link>
       <Link
@@ -39,17 +39,23 @@ export default function CommentHeader({
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className="font-semibold text-[#5A2A27] tracking-tight truncate hover:underline"
+        className="font-semibold text-xs md:text-xl text-[#5A2A27] tracking-tight truncate hover:underline"
       >
         {author.username}
       </Link>
-      {!isDeleted && <span className="text-base">•</span>}
-      {!isDeleted && <span className="text-lg">{createdAt}</span>}
+      {!isDeleted && <span className="text-[10px] md:text-sm">•</span>}
+      {!isDeleted && (
+        <span className="text-[10px] md:text-base">{createdAt}</span>
+      )}
       {author._id === postAuthor && (
-        <span className="text-sm text-gray-500 ml-2">[author]</span>
+        <span className="text-[10px] md:text-sm text-gray-500 ml-2">
+          [author]
+        </span>
       )}
       {isEdited && !isDeleted && (
-        <span className="text-sm text-gray-500 ml-2">(edited)</span>
+        <span className="text-[10px] md:text-sm text-gray-500 ml-2">
+          (edited)
+        </span>
       )}
       {author._id === currentUserId && !comment.isDeleted && (
         <CommentOptionsMenu

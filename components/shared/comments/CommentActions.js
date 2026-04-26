@@ -12,7 +12,7 @@ export default function CommentActions({
   return (
     <div>
       {!comment.isDeleted && (
-        <div className="flex gap-4 text-sm text-gray-500 mt-2">
+        <div className="flex flex-wrap gap-3 md:gap-4 text-[11px] md:text-sm text-gray-500 mt-2">
           <CommentLikeButton
             commentId={comment._id}
             postId={postId}

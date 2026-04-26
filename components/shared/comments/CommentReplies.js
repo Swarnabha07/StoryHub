@@ -17,12 +17,13 @@ export default function CommentReplies({
   onUpdateComment,
   setReplyingTo,
   setEditingComment,
-  depth,
 }) {
   if (!replies || replies.length === 0) return null;
 
   const INITIAL_VISIBLE_REPLIES = 3;
-  const [showAllReplies, setShowAllReplies] = useState(false);
+  const LOAD_STEP = 5;
+
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_REPLIES);
 
   function containsTarget(replies, targetId) {
     for (let r of replies) {
@@ -36,77 +37,65 @@ export default function CommentReplies({
 
   const shouldAutoExpand = containsTarget(replies, highlightedCommentId);
 
-  const visibleReplies =
-    showAllReplies || shouldAutoExpand
-      ? replies
-      : replies.slice(0, INITIAL_VISIBLE_REPLIES);
+  const orderedReplies = [...replies].reverse(); // oldest → newest
+
+  const visibleReplies = shouldAutoExpand
+    ? orderedReplies
+    : orderedReplies.slice(0, visibleCount);
+
+  const remaining = orderedReplies.length - visibleReplies.length;
 
   return (
     <div className="mt-2">
       <AnimatePresence initial={false}>
-        {visibleReplies.length > 0 && (
+        {visibleReplies.map((reply) => (
           <motion.div
-            key="replies-container"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="ml-6 border-l pl-4 overflow-hidden"
+            key={reply._id}
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2 }}
+            className="ml-3 md:ml-6 pl-2 md:pl-4 border-l overflow-hidden" // SINGLE LEVEL INDENT ONLY
           >
-            {visibleReplies.map((reply) => (
-              <motion.div
-                key={reply._id}
-                initial={{ opacity: 0, y: -6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.2 }}
-              >
-                <CommentItem
-                  comment={reply}
-                  id={`comment-${reply._id}`}
-                  highlightedCommentId={highlightedCommentId}
-                  currentUserId={currentUserId}
-                  postId={postId}
-                  postAuthor={postAuthor}
-                  onReply={onReply}
-                  onEdit={onEdit}
-                  onDelete={onDelete}
-                  replyingTo={replyingTo}
-                  editingComment={editingComment}
-                  onAddReply={onAddReply}
-                  onUpdateComment={onUpdateComment}
-                  setReplyingTo={setReplyingTo}
-                  setEditingComment={setEditingComment}
-                  depth={depth}
-                />
-              </motion.div>
-            ))}
+            <CommentItem
+              comment={reply}
+              id={`comment-${reply._id}`}
+              highlightedCommentId={highlightedCommentId}
+              currentUserId={currentUserId}
+              postId={postId}
+              postAuthor={postAuthor}
+              onReply={onReply}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              replyingTo={replyingTo}
+              editingComment={editingComment}
+              onAddReply={onAddReply}
+              onUpdateComment={onUpdateComment}
+              setReplyingTo={setReplyingTo}
+              setEditingComment={setEditingComment}
+            />
           </motion.div>
-        )}
+        ))}
       </AnimatePresence>
 
-      {replies?.length > INITIAL_VISIBLE_REPLIES && (
+      {!shouldAutoExpand && orderedReplies.length > INITIAL_VISIBLE_REPLIES && (
         <button
-          onClick={() => setShowAllReplies(!showAllReplies)}
-          className="flex items-center gap-1 text-sm text-[#5A2A27] mt-1  opacity-70 hover:opacity-100"
+          onClick={() => {
+            if (remaining > 0) {
+              // Load more
+              setVisibleCount((prev) =>
+                Math.min(prev + LOAD_STEP, orderedReplies.length),
+              );
+            } else {
+              // Collapse
+              setVisibleCount(INITIAL_VISIBLE_REPLIES);
+            }
+          }}
+          className="text-[11px] md:text-sm text-[#5A2A27] mt-1 opacity-70 hover:opacity-100"
         >
-          <motion.span
-            animate={{ rotate: showAllReplies || shouldAutoExpand ? 90 : 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="currentColor"
-            >
-              <path d="M320-200v-560l440 280-440 280Zm80-280Zm0 134 210-134-210-134v268Z" />
-            </svg>
-          </motion.span>
-          {showAllReplies || shouldAutoExpand
-            ? "Hide replies"
-            : `Show ${replies.length - INITIAL_VISIBLE_REPLIES} more replies`}
+          {remaining > 0
+            ? `Show ${Math.min(LOAD_STEP, remaining)} more replies`
+            : "Hide replies"}
         </button>
       )}
     </div>

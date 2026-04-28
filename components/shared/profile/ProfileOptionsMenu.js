@@ -46,12 +46,11 @@ export default function ProfileOptionsMenu({ currentUser }) {
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="p-0.5 m-1.5 rounded-full cursor-pointer hover:bg-gray-100 transition-all ease-in-out duration-400">
+          <button className="border border-gray-400 hover:border-gray-950 hover:bg-gray-200 cursor-pointer rounded-xl px-1.5 py-0.5 transition-all ease-in-out duration-400">
             <svg
+              className="h-6 w-6 md:h-10 md:w-10"
               xmlns="http://www.w3.org/2000/svg"
-              height="60px"
               viewBox="0 -960 960 960"
-              width="60px"
               fill="#1f1f1f"
             >
               <path d="M207.86-432Q188-432 174-446.14t-14-34Q160-500 174.14-514t34-14Q228-528 242-513.86t14 34Q256-460 241.86-446t-34 14Zm272 0Q460-432 446-446.14t-14-34Q432-500 446.14-514t34-14Q500-528 514-513.86t14 34Q528-460 513.86-446t-34 14Zm272 0Q732-432 718-446.14t-14-34Q704-500 718.14-514t34-14Q772-528 786-513.86t14 34Q800-460 785.86-446t-34 14Z" />
@@ -64,16 +63,13 @@ export default function ProfileOptionsMenu({ currentUser }) {
             Copy link to Profile
           </DropdownMenuItem>
 
-          <DropdownMenuSeparator />
-
-          {currentUser?.email === session?.user?.email ? (
-            <DropdownMenuItem className="text-red-600">
-              Delete my account
-            </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem className="text-red-600">
-              Block User
-            </DropdownMenuItem>
+          {currentUser?.email !== session?.user?.email && (
+            <div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-red-600">
+                Block User
+              </DropdownMenuItem>
+            </div>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

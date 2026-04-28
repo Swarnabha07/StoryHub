@@ -9,7 +9,7 @@ import Sidebar from "@/components/layout/Sidebar";
 import { Lora } from "next/font/google";
 
 const lora = Lora({
-  weight: "700",
+  weight: "600",
   subsets: ["latin"],
 });
 
@@ -94,11 +94,13 @@ export default function BookmarksClient({ bookmarkedIds }) {
           </>
         )}
       </AnimatePresence>
-      <h1 className="text-2xl my-8 text-center underline font-bold text-[#5A2A27]">
+
+      <div className="flex flex-col items-center gap-6 w-full max-w-7xl mx-auto px-2 md:px-0">
+
+      <h1 className={`text-2xl md:text-4xl font-bold border-b border-[#a1a1a1] py-2 mt-4 mb-2 md:mb-4 ${lora.className} text-center`}>
         Your Bookmarks
       </h1>
 
-      <div className="posts w-2/3 mx-auto my-10">
         {loading && page === 1 ? (
           <div className="flex flex-col items-center gap-6 w-full">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -111,7 +113,7 @@ export default function BookmarksClient({ bookmarkedIds }) {
             <p className="text-xl mt-2">Save posts to read them later.</p>
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-6 w-full">
+          <div className=" flex flex-col items-center gap-4 md:gap-6 px-2 md:px-0 w-full">
             {posts.map((post) => (
               <PostCard
                 key={post._id}
@@ -121,7 +123,6 @@ export default function BookmarksClient({ bookmarkedIds }) {
             ))}
           </div>
         )}
-      </div>
 
       {/* Invinsible sentinel div */}
       <div ref={loadMoreRef} className="h-10 flex justify-center items-center">
@@ -129,6 +130,9 @@ export default function BookmarksClient({ bookmarkedIds }) {
           <div className="w-5 h-5 border-2 border-[#5A2A27] border-t-transparent rounded-full animate-spin" />
         )}
       </div>
+
+      </div>
+
     </main>
   );
 }

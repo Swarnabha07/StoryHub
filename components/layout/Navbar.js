@@ -133,18 +133,33 @@ const Navbar = ({
               </Link>
             </li>
             <li>
-              <Link className="flex" href={`/activity`}>
+              <Link
+                href="/activity"
+                className="relative flex items-center justify-center mb-1 md:mb-0 leading-none"
+              >
+                {/* ICON */}
+                <lord-icon
+                  src="https://cdn.lordicon.com/apmrcxtj.json"
+                  trigger="hover"
+                  colors="primary:#121331,secondary:#d59f80"
+                  className="w-6 h-6 md:w-10 md:h-10 lg:w-[50px] lg:h-[50px]"
+                ></lord-icon>
+
+                {/* BADGE */}
                 {unreadCount > 0 && (
-                  <span className=" bg-red-500 text-white text-xs font-semibold rounded-full min-w-[18px] h-[18px] px-2">
+                  <span
+                    className="absolute -top-1 -right-1 
+        min-w-[16px] h-[16px] px-1.5 
+        sm:min-w-[18px] sm:h-[18px] 
+        md:min-w-[20px] md:h-[20px]
+        flex items-center justify-center
+        bg-red-500 text-white 
+        text-[9px] sm:text-[10px] md:text-xs 
+        font-semibold rounded-full leading-none"
+                  >
                     {unreadCount > 99 ? "99+" : unreadCount}
                   </span>
                 )}
-                <lord-icon
-                  src="https://cdn.lordicon.com/apmrcxtj.json"
-                  className="w-6 h-6 md:w-10 md:h-10 lg:w-[50px] lg:h-[50px]"
-                  trigger="hover"
-                  colors="primary:#121331,secondary:#d59f80"
-                ></lord-icon>
               </Link>
             </li>
             <li>

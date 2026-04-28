@@ -52,11 +52,11 @@ export default function FollowButton({
     <button
       onClick={toggleFollow}
       disabled={loading}
-      className={`${className} rounded-full  transition-colors duration-200 ${
+      className={`${className} rounded-xl  transition-colors duration-200 ${
         loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
       } ${
         isFollowing
-          ? "bg-white text-black border"
+          ? "border border-[#5A2A27] text-[#5A2A27]"
           : "bg-[#5A2A27] text-[#FFFDF9] hover:bg-[#4b1f1d]"
       }`}
     >

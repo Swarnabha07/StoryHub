@@ -93,7 +93,7 @@ export default function ActivityItem({ activity }) {
           </Link>
         )}
 
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex flex-col md:flex-row gap-1 md:gap-3">
             <p className="flex gap-2 text-sm md:text-lg ">
               <Link
@@ -106,7 +106,7 @@ export default function ActivityItem({ activity }) {
               </Link>{" "}
             </p>
             {displayText && (
-              <p className="text-sm md:text-lg line-clamp-2 md:line-clamp-1 wrap-break-word overflow-hidden">
+              <p className="text-sm md:text-lg line-clamp-2 md:line-clamp-1 wrap-break-word overflow-hidden whitespace-normal">
                 {displayText}
               </p>
             )}

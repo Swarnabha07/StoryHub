@@ -75,7 +75,7 @@ const UserPage = ({ username, posts, bookmarkedIds, followingIds }) => {
     async function loadImages() {
       try {
         const res = await fetch(
-          `/api/profile/images/getsignedurl?userId=${currentUser?._id}`
+          `/api/profile/images/getsignedurl?userId=${currentUser?._id}`,
         );
         const data = await res.json();
 
@@ -185,164 +185,188 @@ const UserPage = ({ username, posts, bookmarkedIds, followingIds }) => {
           </>
         )}
       </AnimatePresence>
-      <section className="grid grid-cols-2">
-        {/* {left section} */}
-        <div className="flex flex-col items-center gap-8">
-          <div className="w-full rounded-b-2xl">
-            {/* Banner */}
-            <div className="relative w-full h-[250px] overflow-hidden group">
-              <Image
-                src={images.coverImage || "/defaultCover.png"}
-                width={1200}
-                height={400}
-                alt="Profile cover picture"
-                className="w-full h-full object-cover"
-                unoptimized
-              />
 
-              {/* Bottom Fade */}
-              <div className="absolute bottom-0 left-0 w-full h-[120px] bg-linear-to-t from-black/50 to-transparent"></div>
+      <section className="w-full flex flex-col items-center bg-[#FFFDF9] min-h-screen">
+        {/* ================= COVER + HEADER ================= */}
+        <div className="w-full">
+          {/* Banner */}
+          <div className="relative w-full h-[170px] md:h-[320px] overflow-hidden">
+            <Image
+              src={images.coverImage || "/defaultCover.png"}
+              width={1200}
+              height={400}
+              alt="Profile cover picture"
+              className="w-full h-full object-cover"
+              unoptimized
+            />
+            {/* Gradient overlay — stronger, editorial */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          </div>
 
-              {/* Name on banner */}
-              <div className="absolute bottom-4 left-3">
-                <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
-                  {currentUser.name}
-                </h1>
+          {/* Profile Card */}
+          <div className="relative px-2 md:px-8">
+            {/* Avatar + Identity Row */}
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 md:gap-4 -mt-8 md:-mt-12">
+              {/* Avatar */}
+              <div className="flex items-end gap-3 md:gap-6">
+                <div className="relative shrink-0">
+                  <Image
+                    className="rounded-full object-cover w-[84px] h-[84px] md:w-[128px] md:h-[128px] border-4 border-[#FFFDF9] shadow-lg"
+                    src={images.profileImage || "/defaultAvatar.png"}
+                    height={128}
+                    width={128}
+                    alt="User profile picture"
+                    unoptimized
+                  />
+                </div>
+
+                <div className="mb-1">
+                  <h1 className="text-lg md:text-3xl font-bold text-gray-900 leading-tight tracking-tight">
+                    {currentUser.name}
+                  </h1>
+                  <p className="text-sm md:text-lg text-[#834541] font-medium mt-1">
+                    @{currentUser.username}
+                  </p>
+                </div>
+              </div>
+
+              {/* CTA */}
+              <div className="flex items-center gap-3 mb-1">
+                {currentUser.email === session?.user?.email ? (
+                  <Link href="/dashboard">
+                    <button className="font-semibold text-xs md:text-lg px-6 md:px-8 py-2 rounded-xl border border-[#5A2A27] text-[#5A2A27] hover:bg-[#5A2A27] hover:text-[#FFFDF9] transition-all duration-200">
+                      Edit profile
+                    </button>
+                  </Link>
+                ) : (
+                  <FollowButton
+                    userId={currentUser._id}
+                    initialIsFollowing={isFollowing}
+                    onFollowersChange={setFollowersCount}
+                    className="font-semibold text-xs md:text-lg px-6 md:px-8 py-2"
+                  />
+                )}
+                {/* Options button */}
+                <div className="">
+                  <ProfileOptionsMenu currentUser={currentUser} />
+                </div>
               </div>
             </div>
 
-            {/* Options */}
-            <div className="w-full flex justify-end px-3 pt-7 -mt-10 relative z-10">
-              <ProfileOptionsMenu currentUser={currentUser} />
-            </div>
-          </div>
+            {/* Bio */}
+            {currentUser.bio && (
+              <p className="text-gray-500 mt-8 text-xs md:text-base leading-relaxed max-w-xl">
+                {currentUser.bio}
+              </p>
+            )}
 
-          <div className="w-full flex flex-col items-center gap-4 pb-12">
-            <h3 className="text-2xl text-gray-800">Recent Stories</h3>
-            <div className="bg-black h-0.5 opacity-5 w-full"></div>
-            <div className="posts flex flex-col items-center gap-6 w-full">
-              {posts.length === 0 ? (
-                <div>
-                  {currentUser.email === session?.user?.email ? (
-                    <div className="flex flex-col items-center gap-12 my-2">
-                      <p className="text-gray-500">
-                        You have not posted anything yet!
-                      </p>
-                      <Link href={`/editor/new`}>
-                        <button className="px-8 py-2 text-lg bg-[#fcf8f2] border border-[#ede6e1] rounded-full text-black hover:bg-[#c5a572] hover:text-[#FFFDF9] transition-colors duration-200 cursor-pointer">
-                          Start posting
-                        </button>
-                      </Link>
-                    </div>
-                  ) : (
-                    <p className="text-gray-500 my-2">
-                      This user has not published any posts yet.
-                    </p>
-                  )}
+            {/* Stats + Mutuals Row */}
+            <div className="flex flex-wrap justify-center md:justify-start items-center gap-10 mt-10 pb-5 border-b border-gray-100">
+              {/* Stats */}
+              <Link href={`/profile/${currentUser.username}/followers`}>
+                <div className="group cursor-pointer">
+                  <p className="text-base md:text-xl font-bold text-gray-900 group-hover:text-[#834541] transition-colors">
+                    {followersCount}
+                  </p>
+                  <span className="text-xs md:text-base text-gray-400 uppercase tracking-wider">
+                    Followers
+                  </span>
                 </div>
-              ) : (
-                <div className="flex flex-col items-center gap-6 w-full">
-                  {posts.map((post) => (
-                    <PostCard
-                      key={post._id}
-                      post={post}
-                      bookmarkedSet={bookmarkedSetRef.current}
-                    />
-                  ))}
+              </Link>
+
+              <div className="h-8 w-px bg-gray-200" />
+
+              <Link href={`/profile/${currentUser.username}/following`}>
+                <div className="group cursor-pointer">
+                  <p className="text-base md:text-xl font-bold text-gray-900 group-hover:text-[#834541] transition-colors">
+                    {currentUser.followingCount}
+                  </p>
+                  <span className="text-xs md:text-base text-gray-400 uppercase tracking-wider">
+                    Following
+                  </span>
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
+              </Link>
 
-        {/* {right section} */}
-        <div className="min-h-screen border-l border-[#f0ebe7]">
-          <div className="sticky top-20">
-            <div className="flex flex-col items-center gap-7 px-28 py-20 my-5">
-              <Image
-                className="rounded-full object-cover w-[150px] h-[150px]"
-                src={images.profileImage || "/defaultAvatar.png"}
-                height={100}
-                width={100}
-                alt="User profile picture"
-                unoptimized
-              ></Image>
-              <h5 className="text-2xl text-gray-900">
-                @{currentUser.username}
-              </h5>
-              <div className="flex gap-20">
-                <Link href={`/profile/${currentUser.username}/followers`}>
-                  <div className="flex flex-col items-center cursor-pointer hover:bg-gray-100 rounded-xl p-3 transition-all ease-in-out duration-300">
-                    <span className="text-xl text-gray-700">Followers</span>
-                    <p className="text-xl text-gray-700">{followersCount}</p>
-                  </div>
-                </Link>
-                <Link href={`/profile/${currentUser.username}/following`}>
-                  <div className="flex flex-col items-center cursor-pointer hover:bg-gray-100 rounded-xl p-3 transition-all ease-in-out duration-300">
-                    <span className="text-xl text-gray-700">Following</span>
-                    <p className="text-xl text-gray-700">
-                      {currentUser.followingCount}
-                    </p>
-                  </div>
-                </Link>
-              </div>
-
+              {/* Mutuals */}
               {currentUser.email !== session?.user?.email && (
-                /* We set a fixed height here so the bio doesn't jump when the images appear */
-                <div className="flex items-center gap-3 h-10">
+                <>
                   {mutualLoading ? (
-                    /* Match the skeleton exactly as it looks in your ProfileSkeletonLoader */
-                    <div className="flex items-center gap-3 animate-pulse">
+                    <div className="flex items-center gap-3 animate-pulse ml-2">
                       <div className="flex -space-x-2">
-                        <div className="w-10 h-10 rounded-full bg-neutral-200 border-2 border-white" />
-                        <div className="w-10 h-10 rounded-full bg-neutral-200 border-2 border-white" />
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-neutral-200 border-2 border-white" />
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-neutral-200 border-2 border-white" />
                       </div>
-                      <div className="h-4 w-32 bg-neutral-200 rounded" />
+                      <div className="h-3 w-24 bg-neutral-200 rounded-full" />
                     </div>
                   ) : (
-                    /* If data is ready and we have mutuals, show them */
                     mutualPreview.length > 0 && (
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 ml-2">
                         <div className="flex -space-x-2">
                           {mutualPreview.map((u) => (
                             <Image
                               key={u._id}
                               src={u.profileImageUrl || "/defaultAvatar.png"}
                               alt={u.username}
-                              width={24}
-                              height={24}
-                              className="rounded-full border object-cover w-10 h-10"
+                              width={28}
+                              height={28}
+                              className="rounded-full border-2 border-white object-cover w-10 h-10 md:w-12 md:h-12"
                               unoptimized
                             />
                           ))}
                         </div>
                         <Link
                           href={`/profile/${currentUser.username}/mutuals`}
-                          className="text-md text-[#834541] hover:text-[#2e0502]"
+                          className="text-base md:text-xl text-[#834541] hover:text-[#2e0502] transition-colors"
                         >
-                          Followed by {mutualCount} mutual
-                          {mutualCount > 1 ? "s" : ""}
+                          {mutualCount} mutual{mutualCount > 1 ? "s" : ""}
                         </Link>
                       </div>
                     )
                   )}
-                </div>
-              )}
-
-              <p className="text-xl text-gray-500">{currentUser.bio}</p>
-              {currentUser.email === session?.user?.email ? (
-                <button className="font-medium text-xl px-3 py-3 rounded-full bg-[#5A2A27] text-[#FFFDF9] hover:bg-[#4b1f1d] transition-colors duration-200 w-1/4">
-                  <Link href={"/dashboard"}>Edit profile</Link>
-                </button>
-              ) : (
-                <FollowButton
-                  userId={currentUser._id}
-                  initialIsFollowing={isFollowing}
-                  onFollowersChange={setFollowersCount}
-                  className={`font-medium text-xl px-3 py-3 w-1/4`}
-                />
+                </>
               )}
             </div>
+          </div>
+        </div>
+
+        {/* ================= POSTS ================= */}
+        <div className="w-full max-w-7xl flex flex-col items-center gap-6 mt-10 px-4 pb-16">
+          <div className="flex items-center gap-3 w-full">
+            <h3 className="text-base md:text-lg font-semibold uppercase tracking-[0.15em] text-gray-400">
+              Recent Stories
+            </h3>
+            <div className="flex-1 h-px bg-gray-100" />
+          </div>
+
+          <div className="flex flex-col items-center gap-5 w-full">
+            {posts.length === 0 ? (
+              <div className="w-full">
+                {currentUser.email === session?.user?.email ? (
+                  <div className="flex flex-col items-center gap-8 py-16 text-center">
+                    <p className="text-gray-400 text-base md:text-lg">
+                      Nothing here yet — your stories are waiting.
+                    </p>
+                    <Link href="/editor/new">
+                      <button className="px-6 md:px-8 py-2 text-sm md:text-base font-medium bg-[#fcf8f2] border border-[#ede6e1] rounded-full text-black hover:bg-[#c5a572] hover:text-[#FFFDF9] transition-colors duration-200 cursor-pointer">
+                        Write your first story
+                      </button>
+                    </Link>
+                  </div>
+                ) : (
+                  <p className="text-gray-400 text-base md:text-lg text-center py-16">
+                    No published stories yet.
+                  </p>
+                )}
+              </div>
+            ) : (
+              posts.map((post) => (
+                <PostCard
+                  key={post._id}
+                  post={post}
+                  bookmarkedSet={bookmarkedSetRef.current}
+                />
+              ))
+            )}
           </div>
         </div>
       </section>

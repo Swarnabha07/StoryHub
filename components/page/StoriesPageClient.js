@@ -18,7 +18,7 @@ const lora = Lora({
 
 const TABS = ["all", "draft", "published"];
 
-export default function StoriesPageClient() {
+export default function StoriesPageClient({ bookmarkedIds }) {
   const [activeTab, setActiveTab] = useState("all");
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -33,6 +33,7 @@ export default function StoriesPageClient() {
   const observerRef = useRef(null);
   const sentinelRef = useRef(null);
   const abortControllerRef = useRef(null);
+  const bookmarkedSetRef = useRef(new Set(bookmarkedIds));
 
   const limit = 10;
 
@@ -194,7 +195,11 @@ export default function StoriesPageClient() {
         ) : (
           <div className="flex flex-col items-center gap-4 py-2">
             {posts.map((post) => (
-              <PostCard key={post._id} post={post} />
+              <PostCard
+                key={post._id}
+                post={post}
+                bookmarkedSet={bookmarkedSetRef.current}
+              />
             ))}
           </div>
         )}

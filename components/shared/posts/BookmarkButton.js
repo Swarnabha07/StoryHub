@@ -30,6 +30,11 @@ export default function BookmarkButton({ postId, initialBookmarked }) {
         throw new Error();
       }
 
+      if (res.status === 403) {
+        alert("Cannot bookmark draft posts");
+        throw new Error();
+      }
+
       if (!res.ok) throw new Error();
 
       const data = await res.json();

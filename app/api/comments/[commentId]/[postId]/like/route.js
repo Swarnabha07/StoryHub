@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { connectDB } from "@/lib/db";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Comment from "@/models/Comment";
+import Post from "@/models/Post";
 import { createActivity } from "@/lib/activity/createActivity";
 
 export async function POST(req, { params }) {

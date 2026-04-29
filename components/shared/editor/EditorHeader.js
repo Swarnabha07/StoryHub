@@ -55,15 +55,7 @@ export default function EditorHeader({
             </Link>
           </div>,
           {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-            transition: Bounce,
+            containerId: "ui",
           },
         );
       }
@@ -76,19 +68,6 @@ export default function EditorHeader({
   }
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={6000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        transition={Bounce}
-      />
       <div className="flex items-center justify-between gap-4 mb-6">
         <input
           type="text"

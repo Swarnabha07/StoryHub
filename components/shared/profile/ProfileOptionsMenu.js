@@ -16,34 +16,13 @@ export default function ProfileOptionsMenu({ currentUser }) {
 
   const copyLink = () => {
     toast.success("Link copied to clipboard", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-      transition: Bounce,
+      containerId: "ui",
     });
     navigator.clipboard.writeText(window.location.href);
   };
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        transition={Bounce}
-      />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="border border-gray-400 hover:border-gray-950 hover:bg-gray-200 cursor-pointer rounded-xl px-1.5 py-0.5 transition-all ease-in-out duration-400">

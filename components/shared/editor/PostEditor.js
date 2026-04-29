@@ -99,7 +99,9 @@ export default function PostEditor({ initialPost }) {
 
     const data = await res.json();
     if (!res.ok) {
-      toast.error("Failed to load cover image");
+      toast.error("Failed to load cover image", {
+        containerId: "ui",
+      });
       return;
     }
     setCoverImageUrl(data.signedUrl);
@@ -107,12 +109,16 @@ export default function PostEditor({ initialPost }) {
 
   async function savePost() {
     if (!title.trim() || !content.trim()) {
-      toast.warn("Title and content are required");
+      toast.warn("Title and content are required", {
+        containerId: "ui",
+      });
       return;
     }
 
     if (title.length > 150) {
-      toast.warn("Title is too long");
+      toast.warn("Title is too long", {
+        containerId: "ui",
+      });
       return;
     }
 
@@ -141,7 +147,9 @@ export default function PostEditor({ initialPost }) {
       }
     } catch (err) {
       console.error(err);
-      toast.error("Failed to save");
+      toast.error("Failed to save", {
+        containerId: "ui",
+      });
     } finally {
       setSaving(false);
     }
@@ -149,19 +157,6 @@ export default function PostEditor({ initialPost }) {
 
   return (
     <div>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        transition={Bounce}
-      />
       <Navbar />
       <div className="bg-black h-0.5 opacity-20"></div>
       <AnimatePresence>

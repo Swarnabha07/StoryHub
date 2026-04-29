@@ -29,6 +29,7 @@ const UserPage = ({ username, posts, bookmarkedIds, followingIds }) => {
   const [mutualPreview, setMutualPreview] = useState([]);
   const [mutualLoading, setMutualLoading] = useState(true);
   const [followersCount, setFollowersCount] = useState(0);
+  const [expanded, setExpanded] = useState(false);
 
   const bookmarkedSetRef = useRef(new Set(bookmarkedIds));
 
@@ -98,6 +99,10 @@ const UserPage = ({ username, posts, bookmarkedIds, followingIds }) => {
       router.push("/");
     }
   }, [status, router]);
+
+  useEffect(() => {
+    setExpanded(false);
+  }, [currentUser?.bio]);
 
   const getData = async () => {
     try {
@@ -255,9 +260,30 @@ const UserPage = ({ username, posts, bookmarkedIds, followingIds }) => {
 
             {/* Bio */}
             {currentUser.bio && (
-              <p className="text-gray-500 mt-8 text-xs md:text-base leading-relaxed max-w-xl">
-                {currentUser.bio}
-              </p>
+              <div className="px-1.5 md:px-0 mt-8 max-w-xl">
+                <div className="relative">
+                  <p
+                    className={`text-gray-500 text-xs md:text-base leading-relaxed wrap-break-word transition-all duration-300 ${
+                      expanded ? "" : "line-clamp-3"
+                    }`}
+                  >
+                    {currentUser.bio}
+                  </p>
+
+                  {!expanded && currentUser.bio.length > 180 && (
+                    <div className="absolute bottom-0 left-0 w-full h-6 bg-linear-to-t from-[#FFFDF9] to-transparent pointer-events-none" />
+                  )}
+                </div>
+
+                {currentUser.bio.length > 180 && (
+                  <button
+                    onClick={() => setExpanded(!expanded)}
+                    className="text-[#C5A572] text-xs md:text-sm mt-1 hover:underline"
+                  >
+                    {expanded ? "Show less" : "Read more"}
+                  </button>
+                )}
+              </div>
             )}
 
             {/* Stats + Mutuals Row */}

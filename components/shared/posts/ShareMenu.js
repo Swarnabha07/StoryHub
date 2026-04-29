@@ -7,7 +7,11 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { shareOnTwitter, shareOnWhatsApp, shareOnFacebook } from "@/lib/posts/share";
+import {
+  shareOnTwitter,
+  shareOnWhatsApp,
+  shareOnFacebook,
+} from "@/lib/posts/share";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 
 export default function ShareMenu({ title }) {
@@ -15,15 +19,7 @@ export default function ShareMenu({ title }) {
 
   const copyLink = async () => {
     toast.success("Link copied to clipboard", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-      transition: Bounce,
+      containerId: "ui",
     });
     await navigator.clipboard.writeText(postUrl);
   };
@@ -33,7 +29,7 @@ export default function ShareMenu({ title }) {
         <DropdownMenuTrigger asChild>
           <button className="rounded-full cursor-pointer transition-all ease-in-out duration-200 text-gray-400 hover:text-[#131212]">
             <svg
-            className="h-5 w-5 md:h-6 md:w-6"
+              className="h-5 w-5 md:h-6 md:w-6"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 -960 960 960"
               fill="currentColor"
@@ -102,19 +98,6 @@ export default function ShareMenu({ title }) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        transition={Bounce}
-      />
     </>
   );
 }

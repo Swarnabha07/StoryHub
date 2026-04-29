@@ -3,6 +3,7 @@
 import NotificationToast from "@/components/shared/notifications/NotificationToast";
 import useNotificationStream from "@/hooks/useNotificationStream";
 import { useStore } from "@/Store/store";
+import { useCallback, useRef } from "react";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 
 const activityMessages = {
@@ -16,27 +17,43 @@ const activityMessages = {
 export default function NotificationProvider({ children }) {
   const { incrementUnread } = useStore();
 
-  useNotificationStream((data) => {
-    if (data.type !== "activity") return;
+  const seenIdsRef = useRef(new Set());
 
-    const { activity, isNewActivity } = data;
-    const actor = activity?.actor;
-    const message = activityMessages[activity?.type];
+  const handleNotification = useCallback(
+    (data) => {
+      if (data.type !== "activity") return;
 
-    if (!actor || !message) return;
+      const { activity, isNewActivity } = data;
+      const actor = activity?.actor;
+      const message = activityMessages[activity?.type];
+      const id = activity?._id;
 
-    if (isNewActivity) {
-      incrementUnread();
-    }
+      if (!actor || !message || !id) return;
 
-    toast(<NotificationToast actor={actor} message={message} />, {
-      toastId: activity._id,
-    });
-  });
+      // prevent duplicate events
+      if (seenIdsRef.current.has(id)) return;
+      seenIdsRef.current.add(id);
+
+      if (isNewActivity) {
+        incrementUnread();
+      }
+
+      if (!toast.isActive(id)) {
+        toast(<NotificationToast actor={actor} message={message} />, {
+          toastId: id,
+          containerId: "activity",
+        });
+      }
+    },
+    [incrementUnread],
+  );
+
+  useNotificationStream(handleNotification);
 
   return (
     <>
       <ToastContainer
+        containerId="activity"
         position="top-right"
         autoClose={8000}
         hideProgressBar={false}
@@ -49,6 +66,22 @@ export default function NotificationProvider({ children }) {
         theme="dark"
         transition={Bounce}
       />
+
+      <ToastContainer
+        containerId="ui"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+      />
+
       {children}
     </>
   );

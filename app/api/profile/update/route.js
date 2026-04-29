@@ -15,7 +15,7 @@ export async function PUT(req) {
   // 2️ Parse & sanitize input
   const { name, username, bio } = await req.json();
 
-  const cleanName = name?.trim(); 
+  const cleanName = name?.trim();
   const cleanUsername = username?.trim();
   const cleanBio = bio?.trim();
 
@@ -32,7 +32,7 @@ export async function PUT(req) {
     });
   }
 
-  if (cleanBio && cleanBio.length > 300) {
+  if (cleanBio && cleanBio.length > 400) {
     return new Response(JSON.stringify({ error: "Bio too long" }), {
       status: 400,
     });
@@ -60,7 +60,7 @@ export async function PUT(req) {
       username: cleanUsername,
       bio: cleanBio,
     },
-    { new: true }
+    { new: true },
   );
 
   // 6️ Success response

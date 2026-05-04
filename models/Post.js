@@ -85,6 +85,27 @@ const PostSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+
+    viewsCount: {
+      type: Number,
+      default: 0,
+      index: true,
+    },
+
+    uniqueViewsCount: {
+      type: Number,
+      default: 0,
+    },
+
+    commentsCount: {
+      type: Number,
+      default: 0,
+    },
+
+    lastViewedAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

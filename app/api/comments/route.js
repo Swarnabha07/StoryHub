@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import { getSignedProfileImage } from "@/actions/getSignedProfileImage";
 import { timeAgo } from "@/lib/activity/timeAgo";
 import { createActivity } from "@/lib/activity/createActivity";
+import { updateDailyStats } from "@/lib/analytics/updateDailyStats";
 
 export async function POST(req) {
   try {
@@ -74,6 +75,18 @@ export async function POST(req) {
       post: postId,
       author: session.user.id,
       parentComment: parentCommentId || null,
+    });
+
+    //for incrementing comments count of that post
+    await Post.findByIdAndUpdate(postId, {
+      $inc: { commentsCount: 1 },
+    });
+
+    //for updating daily stats of a post for every new comment
+    await updateDailyStats({
+      postId,
+      authorId: postExists.author,
+      type: "comment",
     });
 
     //For creating comment activity

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { useStore } from "@/Store/store";
@@ -13,12 +13,28 @@ import LikeButton from "./LikeButton";
 import BookmarkButton from "./BookmarkButton";
 import FollowButton from "../profile/FollowButton";
 import { useRouter } from "next/navigation";
-import DOMPurify from "dompurify";
+import createDOMPurify from "dompurify";
 
 const PostPageClient = ({ post }) => {
   const { isSidebarOpen, setIsSidebarOpen } = useStore();
   const { data: session } = useSession();
   const router = useRouter();
+  const [content, setContent] = useState("");
+
+  useEffect(() => {
+    const DOMPurify = createDOMPurify(window);
+    setContent(DOMPurify.sanitize(post.content));
+  }, [post.content]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetch(`/api/posts/${post.slug}/view`, {
+        method: "POST",
+      });
+    }, 5000); // 5 sec delay
+
+    return () => clearTimeout(timer);
+  }, [post.slug]);
 
   return (
     <div className="bg-[#FFFDF9]">
@@ -113,6 +129,7 @@ const PostPageClient = ({ post }) => {
               >
                 <path d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z" />
               </svg>
+              {post.commentsCount}
             </button>
 
             {/* Bookmark */}
@@ -160,7 +177,9 @@ const PostPageClient = ({ post }) => {
         {/* Content */}
         <article
           className="prose prose-lg max-w-none prose-headings:text-[#1f1f1f] text-xs md:text-base wrap-break-word overflow-hidden"
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
+          dangerouslySetInnerHTML={{
+            __html: content,
+          }}
         />
       </main>
     </div>

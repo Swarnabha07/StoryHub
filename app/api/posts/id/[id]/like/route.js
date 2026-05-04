@@ -5,6 +5,7 @@ import { connectDB } from "@/lib/db";
 import Post from "@/models/Post";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { createActivity } from "@/lib/activity/createActivity";
+import { updateDailyStats } from "@/lib/analytics/updateDailyStats";
 
 export async function POST(req, { params }) {
   try {
@@ -42,6 +43,13 @@ export async function POST(req, { params }) {
       // UNLIKE
       post.likes = post.likes.filter((uid) => uid.toString() !== userId);
       post.likesCount -= 1;
+
+      await updateDailyStats({
+        postId: post._id,
+        authorId: post.author,
+        type: "like",
+        isUnlike: true,
+      });
     } else {
       // LIKE
       post.likes.push(userId);
@@ -52,6 +60,13 @@ export async function POST(req, { params }) {
         targetUser: post.author,
         type: "POST_LIKE",
         post: post._id,
+      });
+
+      await updateDailyStats({
+        postId: post._id,
+        authorId: post.author,
+        type: "like",
+        isUnlike: false,
       });
     }
 

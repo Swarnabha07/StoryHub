@@ -5,6 +5,7 @@ import { connectDB } from "@/lib/db";
 import User from "@/models/User";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { createActivity } from "@/lib/activity/createActivity";
+import { updateUserAnalytics } from "@/lib/analytics/updateUserAnalytics";
 
 export async function POST(req, { params }) {
   try {
@@ -48,6 +49,11 @@ export async function POST(req, { params }) {
 
       currentUser.followingCount -= 1;
       targetUser.followersCount -= 1;
+
+      await updateUserAnalytics({
+        userId: targetUserId,
+        type: "unfollow",
+      });
     } else {
       // FOLLOW
       currentUser.following.push(targetUserId);
@@ -60,6 +66,11 @@ export async function POST(req, { params }) {
         actor: currentUserId,
         targetUser: targetUserId,
         type: "USER_FOLLOW",
+      });
+
+      await updateUserAnalytics({
+        userId: targetUserId,
+        type: "follow",
       });
     }
 

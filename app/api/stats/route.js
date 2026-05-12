@@ -51,9 +51,9 @@ export async function GET() {
 
     // Engagement Rate
     const engagementRate =
-      result.totalViews > 0
+      result.totalReach > 0
         ? ((result.totalLikes + result.totalComments * 0.3) /
-            result.totalViews) *
+            result.totalReach) *
           100
         : 0;
 

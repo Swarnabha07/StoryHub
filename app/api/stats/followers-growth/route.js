@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
-import PostAnalytics from "@/models/PostAnalytics";
+import UserAnalytics from "@/models/UserAnalytics";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
@@ -10,38 +10,40 @@ export async function GET(req) {
     await connectDB();
 
     const session = await getServerSession(authOptions);
+
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { searchParams } = req.nextUrl;
+
     const range = searchParams.get("range") || "7d";
 
     const userId = new mongoose.Types.ObjectId(session.user.id);
 
-    // Determine date range
+    // Determine range
     const days = range === "30d" ? 30 : 7;
 
+    // Start date
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
-    // convert to string format
+    // Convert to YYYY-MM-DD
     const startDateStr = startDate.toISOString().split("T")[0];
 
-    const growth = await PostAnalytics.aggregate([
+    // Aggregate followers analytics
+    const growth = await UserAnalytics.aggregate([
       {
         $match: {
-          author: userId,
-          date: { $gte: startDateStr }, // filter by range
+          user: userId,
+          date: { $gte: startDateStr },
         },
       },
       {
         $group: {
           _id: "$date",
-          impressions: { $sum: "$views" },
-          reach: { $sum: "$uniqueViews" },
-          likes: { $sum: "$likes" },
-          comments: { $sum: "$comments" },
+          gained: { $sum: "$followersGained" },
+          lost: { $sum: "$followersLost" },
         },
       },
       {
@@ -49,35 +51,32 @@ export async function GET(req) {
       },
     ]);
 
-    // Create map from aggregation
+    // Create quick lookup map
     const growthMap = new Map();
 
     growth.forEach((item) => {
       growthMap.set(item._id, {
-        impressions: item.impressions,
-        reach: item.reach,
-        likes: item.likes,
-        comments: item.comments,
+        gained: item.gained,
+        lost: item.lost,
       });
     });
 
-    // Generate full date range
+    // Fill missing dates
     const filledData = [];
 
     const today = new Date();
 
     for (let i = days - 1; i >= 0; i--) {
       const d = new Date(today);
+
       d.setDate(today.getDate() - i);
 
-      const dateStr = d.toISOString().split("T")[0]; // "YYYY-MM-DD"
+      const dateStr = d.toISOString().split("T")[0];
 
       const existing = growthMap.get(dateStr);
 
-      const impressions = existing?.impressions || 0;
-      const reach = existing?.reach || 0;
-      const likes = existing?.likes || 0;
-      const comments = existing?.comments || 0;
+      const gained = existing?.gained || 0;
+      const lost = existing?.lost || 0;
 
       filledData.push({
         rawDate: dateStr,
@@ -85,17 +84,19 @@ export async function GET(req) {
           day: "numeric",
           month: "short",
         }),
-        impressions,
-        reach,
-        likes,
-        comments,
-        engagement: reach * 0.6 + likes * 2 + comments * 3,
+        gained,
+        lost,
+        net: gained - lost,
       });
     }
 
-    return NextResponse.json({ success: true, growth: filledData });
+    return NextResponse.json({
+      success: true,
+      growth: filledData,
+    });
   } catch (err) {
     console.error(err);
+
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

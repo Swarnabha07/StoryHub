@@ -57,7 +57,7 @@ export default function BookmarkButton({ postId, initialBookmarked }) {
       className={`flex items-center gap-1 text-sm transition-colors duration-200 ${
         loading ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
       } ${
-        bookmarked ? "text-[#421b18]" : "text-gray-400 hover:text-[#5A2A27]"
+        bookmarked ? "text-[#5F6B2F]" : "text-gray-400 hover:text-[#5F6B2F]"
       }`}
     >
       {bookmarked ? (

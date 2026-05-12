@@ -119,7 +119,7 @@ const PostPageClient = ({ post }) => {
               onClick={() => {
                 router.push(`/posts/${post.slug}/comments`);
               }}
-              className={`flex items-center gap-1 text-xs md:text-sm transition-colors duration-200 cursor-pointer text-gray-400 hover:text-[#C5A572]`}
+              className={`flex items-center gap-1 text-xs md:text-sm transition-colors duration-200 cursor-pointer text-gray-400 hover:text-[#c5694d]`}
             >
               <svg
                 className="h-5 w-5 md:h-6 md:w-6"

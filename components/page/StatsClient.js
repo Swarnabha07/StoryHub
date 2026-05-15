@@ -87,23 +87,32 @@ export default function StatsClient() {
         <div className="flex flex-wrap justify-center gap-4 md:gap-6 w-full">
           <StatsCard
             title="Total Impressions"
-            value={data ? `${data?.totalViews}` : "0"}
+            value={data?.totalViews}
+            isLoading={!data}
           />
           <StatsCard
             title="Total Reach"
-            value={data ? `${data?.totalReach}` : "0"}
+            value={data?.totalReach}
+            isLoading={!data}
           />
+
           <StatsCard
             title="Total Likes"
-            value={data ? `${data?.totalLikes}` : "0"}
+            value={data?.totalLikes}
+            isLoading={!data}
           />
+
           <StatsCard
             title="Total Comments"
-            value={data ? `${data?.totalComments}` : "0"}
+            value={data?.totalComments}
+            isLoading={!data}
           />
+
           <StatsCard
-            title="Engagement"
-            value={data ? `${data.engagementRate}%` : "0%"}
+            title="Total Engagement Score"
+            value={`${data?.engagementRate}`}
+            isLoading={!data}
+            description="Measures how intensely your audience interacts with your content relative to reach."
           />
         </div>
 

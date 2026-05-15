@@ -20,14 +20,23 @@ export async function PUT(req) {
   const cleanBio = bio?.trim();
 
   // 3️ Basic validation
-  if (!cleanUsername) {
-    return new Response(JSON.stringify({ error: "Username is required" }), {
+  if (!cleanUsername || !cleanName) {
+    return new Response(
+      JSON.stringify({ error: "Username and Name are required" }),
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (cleanUsername.length < 3) {
+    return new Response(JSON.stringify({ error: "Username is too short" }), {
       status: 400,
     });
   }
 
-  if (cleanUsername.length < 3) {
-    return new Response(JSON.stringify({ error: "Username too short" }), {
+  if (cleanName.length < 5) {
+    return new Response(JSON.stringify({ error: "Name is too short" }), {
       status: 400,
     });
   }

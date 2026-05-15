@@ -41,11 +41,21 @@ export const authOptions = {
 
       const existingUser = await User.findOne({ email: user.email });
 
+      // Generate fallback name from email if name missing
+      const generatedName =
+        user.email?.split("@")[0]?.replace(/[^a-zA-Z0-9]/g, "") || "user";
+
+      // Final safe display name
+      const safeName =
+        user.name?.trim() ||
+        generatedName.charAt(0).toUpperCase() + generatedName.slice(1);
+
       if (!existingUser) {
         let newUser;
+
         // auto-generate username
-        const baseUsername = user.name
-          ?.toLowerCase()
+        const baseUsername = safeName
+          .toLowerCase()
           .replace(/\s+/g, "")
           .slice(0, 15);
 
@@ -55,24 +65,32 @@ export const authOptions = {
 
             // create new user
             newUser = await User.create({
-              name: user.name,
+              name: safeName,
               email: user.email,
               username,
               providers: [account.provider],
             });
 
-            break; // success
+            break;
           } catch (err) {
-            if (err.code !== 11000) throw err; // not duplicate → real error
+            if (err.code !== 11000) throw err;
           }
         }
 
         if (!newUser) throw new Error("Failed to create unique user");
 
-        user.id = newUser._id.toString(); // IMPORTANT
+        user.id = newUser._id.toString();
+
         return true;
       }
+
       let shouldSave = false;
+
+      // Fix old users with missing names
+      if (!existingUser.name || !existingUser.name.trim()) {
+        existingUser.name = safeName;
+        shouldSave = true;
+      }
 
       // Add new provider if not present
       if (!existingUser.providers.includes(account.provider)) {
@@ -82,7 +100,8 @@ export const authOptions = {
 
       if (shouldSave) await existingUser.save();
 
-      user.id = existingUser._id.toString(); // IMPORTANT
+      user.id = existingUser._id.toString();
+
       return true;
     },
 

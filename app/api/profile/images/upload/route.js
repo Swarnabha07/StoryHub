@@ -68,7 +68,7 @@ export async function PUT(request) {
   const user = await User.findOneAndUpdate(
     { _id: session.user.id },
     { $set: update },
-    { new: true }
+    { returnDocument: "after" }
   );
 
   return new Response(

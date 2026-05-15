@@ -69,7 +69,7 @@ export async function PUT(req) {
       username: cleanUsername,
       bio: cleanBio,
     },
-    { new: true },
+    { returnDocument: "after" },
   );
 
   // 6️ Success response

@@ -67,7 +67,7 @@ export async function PATCH(req) {
     const updatedUser = await User.findByIdAndUpdate(
       session.user.id,
       { $set: updateFields },
-      { new: true, runValidators: true },
+      { returnDocument: "after", runValidators: true },
     );
 
     if (!updatedUser) {

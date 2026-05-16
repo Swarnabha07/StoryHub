@@ -4,31 +4,44 @@ import User from "@/models/User";
 import Post from "@/models/Post";
 import { getSignedProfileImage } from "@/actions/getSignedProfileImage";
 import { getSignedPostImage } from "@/actions/getSignedPostImage";
+import { escapeRegex } from "@/lib/security/escapeRegex";
 
 export async function GET(req) {
   try {
     const { searchParams } = req.nextUrl;
-    const q = searchParams.get("q")?.trim();
+    const rawQuery = searchParams.get("q");
 
-    if (!q || q.length < 2) {
+    if (typeof rawQuery !== "string") {
+      return NextResponse.json({ users: [], posts: [] }, { status: 400 });
+    }
+
+    const normalizedQuery = rawQuery.trim().toLowerCase();
+
+    if (
+      !normalizedQuery ||
+      normalizedQuery.length < 2 ||
+      normalizedQuery.length > 50
+    ) {
       return NextResponse.json({ users: [], posts: [] });
     }
+
+    const escapedQuery = escapeRegex(normalizedQuery);
 
     await connectDB();
 
     const PREFIX_LIMIT = 5;
-    const isShortQuery = q.length <= PREFIX_LIMIT;
+    const isShortQuery = escapedQuery.length <= PREFIX_LIMIT;
 
     const [users, posts] = await Promise.all([
       // USERS
       isShortQuery
         ? User.find({
-            username: { $regex: `^${q}`, $options: "i" },
+            username: { $regex: `^${escapedQuery}`, $options: "i" },
           })
             .limit(5)
             .select("username name profileImagePath")
         : User.find(
-            { $text: { $search: q } },
+            { $text: { $search: normalizedQuery } },
             { score: { $meta: "textScore" } },
           )
             .sort({ score: { $meta: "textScore" } })
@@ -38,7 +51,7 @@ export async function GET(req) {
       // POSTS
       isShortQuery
         ? Post.find({
-            title: { $regex: `^${q}`, $options: "i" },
+            title: { $regex: `^${escapedQuery}`, $options: "i" },
             status: "published",
             isDeleted: false,
           })
@@ -49,7 +62,7 @@ export async function GET(req) {
             )
         : Post.find(
             {
-              $text: { $search: q },
+              $text: { $search: normalizedQuery },
               status: "published",
               isDeleted: false,
             },

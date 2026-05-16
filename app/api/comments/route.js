@@ -9,6 +9,7 @@ import { getSignedProfileImage } from "@/actions/getSignedProfileImage";
 import { timeAgo } from "@/lib/activity/timeAgo";
 import { createActivity } from "@/lib/activity/createActivity";
 import { updateDailyStats } from "@/lib/analytics/updateDailyStats";
+import { sanitizePlainText } from "@/lib/security/sanitizePlainText";
 
 export async function POST(req) {
   try {
@@ -21,6 +22,19 @@ export async function POST(req) {
 
     const { content, postId, parentCommentId } = await req.json();
 
+    if (
+      typeof content !== "string" ||
+      typeof postId !== "string" ||
+      (parentCommentId !== undefined &&
+        parentCommentId !== null &&
+        typeof parentCommentId !== "string")
+    ) {
+      return NextResponse.json(
+        { error: "Invalid input type" },
+        { status: 400 },
+      );
+    }
+
     if (!postId) {
       return NextResponse.json(
         { error: "Post ID is required" },
@@ -28,15 +42,17 @@ export async function POST(req) {
       );
     }
 
-    if (!content || !content.trim()) {
+    const cleanContent = sanitizePlainText(content);
+
+    if (!cleanContent || !cleanContent.trim()) {
       return NextResponse.json(
-        { error: "Content cannot be empty" },
+        { error: "Comment cannot be empty" },
         { status: 400 },
       );
     }
 
-    if (content.length > 1000) {
-      return NextResponse.json({ error: "Content too long" }, { status: 400 });
+    if (cleanContent.length > 1000) {
+      return NextResponse.json({ error: "Comment too long" }, { status: 400 });
     }
 
     if (!mongoose.isValidObjectId(postId)) {
@@ -71,7 +87,7 @@ export async function POST(req) {
     }
 
     const comment = await Comment.create({
-      content: content.trim(),
+      content: cleanContent.trim(),
       post: postId,
       author: session.user.id,
       parentComment: parentCommentId || null,

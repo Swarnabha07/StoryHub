@@ -10,6 +10,8 @@ import { getSignedPostImage } from "@/actions/getSignedPostImage";
 import { generateExcerpt } from "@/lib/posts/generateExcerpt";
 import { generateTagsFromContent } from "@/lib/posts/generateTags";
 import { calculateReadingTime } from "@/lib/posts/calculateReadingTime";
+import { sanitizePostHtml } from "@/lib/security/sanitizeHtml";
+import { sanitizePlainText } from "@/lib/security/sanitizePlainText";
 
 // CREATE POST
 export async function POST(req) {
@@ -25,22 +27,43 @@ export async function POST(req) {
     const body = await req.json();
     const { title, content, status = "draft", coverImagePath = null } = body;
 
-    if (!title?.trim() || !content?.trim()) {
+    if (typeof title !== "string" || typeof content !== "string") {
+      return NextResponse.json(
+        { error: "Invalid input type" },
+        { status: 400 },
+      );
+    }
+
+    const cleanTitle = sanitizePlainText(title);
+    const cleanContent = sanitizePostHtml(content);
+
+    if (!cleanTitle?.trim() || !cleanContent?.trim()) {
       return NextResponse.json(
         { error: "Title and content are required" },
         { status: 400 },
       );
     }
 
-    if (title.length > 150) {
+    if (cleanTitle.length < 3) {
+      return NextResponse.json({ error: "Title too short" }, { status: 400 });
+    }
+
+    if (cleanTitle.length > 150) {
       return NextResponse.json({ error: "Title too long" }, { status: 400 });
     }
 
-    if (content.length > 200000) {
+    if (cleanContent.length < 5) {
+      return NextResponse.json({ error: "Content too short" }, { status: 400 });
+    }
+
+    if (cleanContent.length > 200000) {
       return NextResponse.json({ error: "Content too large" }, { status: 400 });
     }
 
-    if (!["draft", "published"].includes(status)) {
+    if (
+      typeof status !== "string" ||
+      !["draft", "published"].includes(status)
+    ) {
       return NextResponse.json(
         { error: "Invalid post status" },
         { status: 400 },
@@ -51,11 +74,15 @@ export async function POST(req) {
     await connectDB();
 
     // 4 Slug generation
-    let baseSlug = slugify(title, {
+    let baseSlug = slugify(cleanTitle, {
       lower: true,
       strict: true,
       trim: true,
     });
+
+    if (!baseSlug) {
+      return NextResponse.json({ error: "Invalid title" }, { status: 400 });
+    }
 
     let slug = baseSlug;
     let count = 1;
@@ -69,15 +96,16 @@ export async function POST(req) {
     // 5 Publish logic
     const publishedAt = status === "published" ? new Date() : null;
 
-    const generatedExcerpt = generateExcerpt(content) || title.slice(0, 150);
-    const generatedTags = generateTagsFromContent(content, title);
-    const readingTime = calculateReadingTime(content);
+    const generatedExcerpt =
+      generateExcerpt(cleanContent) || cleanTitle.slice(0, 150);
+    const generatedTags = generateTagsFromContent(cleanContent, cleanTitle);
+    const readingTime = calculateReadingTime(cleanContent);
 
     // 6 Create post
     const post = await Post.create({
-      title: title.trim(),
+      title: cleanTitle.trim(),
       slug,
-      content,
+      content: cleanContent,
       excerpt: generatedExcerpt,
       coverImagePath,
       tags: generatedTags,
@@ -118,8 +146,8 @@ export async function GET(req) {
     await connectDB();
 
     const { searchParams } = req.nextUrl;
-    const page = Number(searchParams.get("page")) || 1;
-    const limit = Number(searchParams.get("limit")) || 10;
+    const page = Math.max(Number(searchParams.get("page")) || 1, 1);
+    const limit = Math.min(Number(searchParams.get("limit")) || 10, 50);
 
     const skip = (page - 1) * limit;
 

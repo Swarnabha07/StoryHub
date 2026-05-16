@@ -55,7 +55,7 @@ export async function PUT(request) {
     });
 
   if (uploadError) {
-    return new Response(JSON.stringify({ error: uploadError.message }), {
+    return new Response(JSON.stringify({ error: upload }), {
       status: 500,
     });
   }

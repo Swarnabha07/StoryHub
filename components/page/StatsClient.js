@@ -36,7 +36,6 @@ export default function StatsClient() {
     const fetchGrowthData = async () => {
       const res = await fetch(`/api/stats/growth?range=${range}`);
       const data = await res.json();
-      console.log("data?.growth", data?.growth);
       setgrowthData(data?.growth || []);
     };
 
@@ -47,7 +46,6 @@ export default function StatsClient() {
     const fetchFollowersGrowthData = async () => {
       const res = await fetch(`/api/stats/followers-growth?range=${range}`);
       const data = await res.json();
-      console.log("data?.growth", data?.growth);
       setfollowersGrowthData(data?.growth || []);
     };
 

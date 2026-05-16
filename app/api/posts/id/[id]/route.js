@@ -9,6 +9,7 @@ import { generateExcerpt } from "@/lib/posts/generateExcerpt";
 import { generateTagsFromContent } from "@/lib/posts/generateTags";
 import { calculateReadingTime } from "@/lib/posts/calculateReadingTime";
 import { sanitizePostHtml } from "@/lib/security/sanitizeHtml";
+import { sanitizePlainText } from "@/lib/security/sanitizePlainText";
 
 //UPDATE PARTIAL POST
 export async function PATCH(req, { params }) {
@@ -62,40 +63,73 @@ export async function PATCH(req, { params }) {
       );
     }
 
+    if (
+      (title !== undefined && typeof title !== "string") ||
+      (content !== undefined && typeof content !== "string") ||
+      (status !== undefined && typeof status !== "string") ||
+      (coverImagePath !== undefined &&
+        coverImagePath !== null &&
+        typeof coverImagePath !== "string")
+    ) {
+      return NextResponse.json(
+        { error: "Invalid input type" },
+        { status: 400 },
+      );
+    }
+
+    const cleanTitle =
+      title !== undefined ? sanitizePlainText(title) : post.title;
+
+    const cleanContent =
+      content !== undefined ? sanitizePostHtml(content) : post.content;
+
     // 7️ Validation
-    if (title !== undefined && !title.trim()) {
+    if (cleanTitle !== undefined && !cleanTitle.trim()) {
       return NextResponse.json(
         { error: "Title cannot be empty" },
         { status: 400 },
       );
     }
 
-    if (content !== undefined && !content.trim()) {
+    if (cleanContent !== undefined && !cleanContent.trim()) {
       return NextResponse.json(
         { error: "Content cannot be empty" },
         { status: 400 },
       );
     }
 
-    if (status && !["draft", "published"].includes(status)) {
+    if (cleanTitle.length < 3) {
+      return NextResponse.json({ error: "Title too short" }, { status: 400 });
+    }
+
+    if (cleanTitle.length > 150) {
+      return NextResponse.json({ error: "Title too long" }, { status: 400 });
+    }
+
+    if (cleanContent.length < 5) {
+      return NextResponse.json({ error: "Content too short" }, { status: 400 });
+    }
+
+    if (cleanContent.length > 200000) {
+      return NextResponse.json({ error: "Content too large" }, { status: 400 });
+    }
+
+    if (status !== undefined && !["draft", "published"].includes(status)) {
       return NextResponse.json(
         { error: "Invalid post status" },
         { status: 400 },
       );
     }
 
-    const cleanContent =
-      content !== undefined ? sanitizePostHtml(content) : post.content;
-
     // 8️ Apply updates
-    if (title !== undefined) post.title = title.trim();
-    if (content !== undefined) {
+    if (cleanTitle !== undefined) post.title = cleanTitle.trim();
+    if (cleanContent !== undefined) {
       post.content = cleanContent;
       post.excerpt = generateExcerpt(cleanContent);
       post.readingTime = calculateReadingTime(cleanContent);
     }
     if (title !== undefined || content !== undefined) {
-      const finalTitle = title ?? post.title;
+      const finalTitle = cleanTitle ?? post.title;
       post.tags = generateTagsFromContent(cleanContent, finalTitle);
     }
     if (coverImagePath !== undefined) post.coverImagePath = coverImagePath;

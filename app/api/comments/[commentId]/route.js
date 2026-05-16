@@ -6,6 +6,7 @@ import { authOptions } from "../../auth/[...nextauth]/route";
 import mongoose from "mongoose";
 import { getSignedProfileImage } from "@/actions/getSignedProfileImage";
 import { timeAgo } from "@/lib/activity/timeAgo";
+import { sanitizePlainText } from "@/lib/security/sanitizePlainText";
 
 export async function PATCH(req, { params }) {
   try {
@@ -24,16 +25,25 @@ export async function PATCH(req, { params }) {
 
     const { content } = await req.json();
 
-    if (content === undefined || !content.trim()) {
+    if (typeof content !== "string") {
       return NextResponse.json(
-        { error: "Content cannot be empty" },
+        { error: "Invalid input type" },
         { status: 400 },
       );
     }
 
-    if (content.trim().length > 1000) {
+    const cleanContent = sanitizePlainText(content);
+
+    if (cleanContent === undefined || !cleanContent.trim()) {
       return NextResponse.json(
-        { error: "Content length is too large" },
+        { error: "Comment cannot be empty" },
+        { status: 400 },
+      );
+    }
+
+    if (cleanContent.trim().length > 1000) {
+      return NextResponse.json(
+        { error: "Comment length is too large" },
         { status: 400 },
       );
     }
@@ -49,7 +59,7 @@ export async function PATCH(req, { params }) {
       );
     }
 
-    comment.content = content.trim();
+    comment.content = cleanContent.trim();
     comment.isEdited = true;
     comment.editedAt = new Date();
 

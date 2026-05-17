@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    dangerouslyAllowSVG: false,
     remotePatterns: [
       // Facebook profile pictures
       {

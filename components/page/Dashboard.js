@@ -29,13 +29,14 @@ const Dashboard = () => {
   });
 
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   // REDIRECT UNAUTHENTICATED USERS
   useEffect(() => {
     if (status === "loading") return;
 
     if (status === "unauthenticated") {
-      router.push("/");
+      router.replace("/");
     }
   }, [status]);
 
@@ -57,6 +58,8 @@ const Dashboard = () => {
 
   // FETCH SIGNED URLS ON PAGE LOAD
   useEffect(() => {
+    if (!session?.user?.id) return;
+
     async function loadImages() {
       try {
         const res = await fetch(
@@ -91,7 +94,6 @@ const Dashboard = () => {
       profileImage: data.profileImage || null,
       coverImage: data.coverImage || null,
     });
-    window.location.reload();
   };
 
   const handleChange = (e) => {
@@ -101,6 +103,31 @@ const Dashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (saving) return;
+    setSaving(true);
+
+    if (form.username.length > 30) {
+      toast.warn(`Username is too long`, {
+        containerId: "ui",
+      });
+      setSaving(false);
+      return;
+    }
+    if (form.name.length > 50) {
+      toast.warn(`Name is too long`, {
+        containerId: "ui",
+      });
+      setSaving(false);
+      return;
+    }
+    if (form.bio.length > 400) {
+      toast.warn(`Bio is too long`, {
+        containerId: "ui",
+      });
+      setSaving(false);
+      return;
+    }
+
     try {
       const res = await fetch("/api/profile/update", {
         method: "PUT",
@@ -109,7 +136,7 @@ const Dashboard = () => {
         },
         body: JSON.stringify({
           name: form.name.trim(),
-          username: form.username.trim(),
+          username: form.username.trim().toLowerCase(),
           bio: form.bio.trim(),
         }),
       });
@@ -120,11 +147,7 @@ const Dashboard = () => {
         throw new Error(data.error || "Failed to update profile");
       }
 
-      await update({
-        username: form.username.trim(),
-        name: form.name.trim(),
-        bio: form.bio.trim(),
-      });
+      await update();
 
       toast.success("Profile updated successfully", {
         containerId: "ui",
@@ -135,6 +158,8 @@ const Dashboard = () => {
       toast.warn(`${err.message}`, {
         containerId: "ui",
       });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -271,9 +296,10 @@ const Dashboard = () => {
           </div>
 
           <button
+            disabled={saving}
             className="bg-[#C5A572] text-white font-bold cursor-pointer w-full md:w-[500px] py-2 rounded-lg 
              hover:bg-[#b89257] focus:ring-2 focus:ring-[#C5A572]/40 
-             focus:outline-none transition duration-200 text-lg md:text-2xl"
+             focus:outline-none transition duration-200 text-lg md:text-2xl disabled:cursor-not-allowed disabled:bg-gray-300"
           >
             Save
           </button>

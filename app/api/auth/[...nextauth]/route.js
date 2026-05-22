@@ -37,6 +37,10 @@ export const authOptions = {
   callbacks: {
     // SAVE NEW USERS TO MONGODB
     async signIn({ user, account }) {
+      if (!user.email) {
+        return false;
+      }
+
       await connectDB();
 
       const existingUser = await User.findOne({ email: user.email });
@@ -105,16 +109,28 @@ export const authOptions = {
       return true;
     },
 
-    async jwt({ token, user, trigger, session }) {
+    async jwt({ token, user, trigger }) {
+      // Initial sign in
       if (user) {
         token.id = user.id; // user.id set above
       }
 
       // when useSession().update() is called
-      if (trigger === "update" && session) {
-        if (session.username) token.username = session.username;
-        if (session.name) token.name = session.name;
-        if (session.bio) token.bio = session.bio;
+      // Refresh trusted user data from DB
+      if (trigger === "update" && token.id) {
+        await connectDB();
+
+        const dbUser = await User.findById(
+          token.id,
+          "username name bio providers",
+        );
+
+        if (dbUser) {
+          token.username = dbUser.username;
+          token.name = dbUser.name;
+          token.bio = dbUser.bio;
+          token.providers = dbUser.providers;
+        }
       }
       return token;
     },
@@ -123,10 +139,14 @@ export const authOptions = {
     async session({ session, token }) {
       await connectDB();
 
-      const dbUser = await User.findOne(
-        { email: session.user.email },
+      const dbUser = await User.findById(
+        token.id,
         "username name bio providers",
       );
+
+      if (!dbUser) {
+        return null;
+      }
 
       session.user.id = token.id;
 
@@ -138,6 +158,15 @@ export const authOptions = {
       session.user.providers = dbUser.providers;
       return session;
     },
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60 * 24, // 1 day
+    updateAge: 60 * 60, // rotate every hour
+  },
+
+  jwt: {
+    maxAge: 60 * 60 * 24,
   },
 };
 

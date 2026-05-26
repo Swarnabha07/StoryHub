@@ -29,7 +29,7 @@ export async function PUT(req) {
 
     const sanitizedName = sanitizePlainText(name);
     const sanitizedUsername = sanitizePlainText(username);
-    const sanitizedBio = sanitizePlainText(bio);
+    const sanitizedBio = bio != null ? sanitizePlainText(bio) : null;
 
     const cleanName = sanitizedName?.trim();
     const cleanUsername = sanitizedUsername?.trim().toLowerCase();
@@ -98,15 +98,24 @@ export async function PUT(req) {
     }
 
     // 5️ Update allowed fields only
-    await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       session.user.id,
       {
         name: cleanName,
         username: cleanUsername,
         bio: cleanBio,
       },
-      { returnDocument: "after" },
+      {
+        returnDocument: "after",
+        runValidators: true,
+      },
     );
+
+    if (!updatedUser) {
+      return new Response(JSON.stringify({ error: "User not found" }), {
+        status: 404,
+      });
+    }
 
     // 6️ Success response
     return new Response(JSON.stringify({ success: true }), { status: 200 });

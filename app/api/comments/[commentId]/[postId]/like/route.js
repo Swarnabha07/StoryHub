@@ -28,6 +28,19 @@ export async function POST(req, { params }) {
 
     await connectDB();
 
+    const post = await Post.findById(postId).select("author status isDeleted");
+
+    if (!post || post.isDeleted) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    }
+
+    const canAccess =
+      post.status === "published" || session.user.id === post.author.toString();
+
+    if (!canAccess) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    }
+
     const comment = await Comment.findById(commentId).select(
       "likes likesCount author post isDeleted",
     );

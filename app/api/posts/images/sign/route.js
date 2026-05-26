@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { getSignedPostImage } from "@/actions/getSignedPostImage";
+import Post from "@/models/Post";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { connectDB } from "@/lib/db";
 
 export async function POST(req) {
   try {
@@ -12,7 +16,28 @@ export async function POST(req) {
       );
     }
 
-    const signedUrl = await getSignedPostImage(body.coverImagePath);
+    await connectDB();
+
+    const session = await getServerSession(authOptions);
+
+    const post = await Post.findOne({
+      isDeleted: false,
+      coverImagePath: body.coverImagePath,
+    }).select("author status isDeleted coverImagePath");
+
+    if (!post) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    }
+
+    const canAccess =
+      post.status === "published" ||
+      session?.user?.id === post.author.toString();
+
+    if (!canAccess) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const signedUrl = await getSignedPostImage(post.coverImagePath);
 
     if (!signedUrl) {
       return NextResponse.json(

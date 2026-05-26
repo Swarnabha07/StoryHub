@@ -17,8 +17,12 @@ export async function GET(req) {
   const { searchParams } = req.nextUrl;
   const status = searchParams.get("status") || "all";
 
-  const page = Number(searchParams.get("page")) || 1;
-  const limit = Number(searchParams.get("limit")) || 10;
+  const page = Math.max(Number(searchParams.get("page")) || 1, 1);
+
+  const limit = Math.min(
+    Math.max(Number(searchParams.get("limit")) || 10, 1),
+    50,
+  );
 
   const skip = (page - 1) * limit;
 
@@ -68,7 +72,7 @@ export async function GET(req) {
   );
 
   const total = await Post.countDocuments({
-    authorId: session.user.id,
+    author: session.user.id,
     ...statusFilter,
     isDeleted: false,
   });

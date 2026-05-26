@@ -17,6 +17,7 @@ import CommentEditor from "../shared/comments/CommentEditor";
 import { useSession } from "next-auth/react";
 import CommentsSkeletonList from "../shared/comments/CommentsSkeletonList";
 import { useRouter, useSearchParams } from "next/navigation";
+import PostNotFound from "../shared/posts/PostNotFound";
 
 const lora = Lora({
   weight: "600",
@@ -33,6 +34,7 @@ export default function CommentsClient({ postId, postSlug, postAuthor }) {
   const [hasMore, setHasMore] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true);
   const [tempHighlightId, setTempHighlightId] = useState(null);
+  const [postNotFound, setPostNotFound] = useState(false);
 
   const { isSidebarOpen, setIsSidebarOpen } = useStore();
   const { data: session } = useSession();
@@ -176,6 +178,11 @@ export default function CommentsClient({ postId, postSlug, postAuthor }) {
         `/api/comments/post/${postId}?cursor=${cursor}&limit=20`,
       );
 
+      if (res.status === 404) {
+        setPostNotFound(true);
+        return;
+      }
+
       if (!res.ok) throw new Error("Failed to fetch comments");
 
       const data = await res.json();
@@ -200,6 +207,11 @@ export default function CommentsClient({ postId, postSlug, postAuthor }) {
   async function fetchCommentContext(commentId) {
     try {
       const res = await fetch(`/api/comments/${commentId}/context`);
+
+      if (res.status === 404) {
+        setPostNotFound(true);
+        return;
+      }
 
       if (!res.ok) throw new Error("Failed to fetch comment");
 
@@ -263,6 +275,10 @@ export default function CommentsClient({ postId, postSlug, postAuthor }) {
       prev.map((c) => (c._id === commentId ? { ...c, isDeleted: true } : c)),
     );
   }, []);
+
+  if (postNotFound) {
+    return <PostNotFound />;
+  }
 
   return (
     <main className="min-h-screen bg-[#FFFDF9]">

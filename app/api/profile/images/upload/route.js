@@ -132,11 +132,13 @@ export async function PUT(request) {
       { returnDocument: "after" },
     );
 
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
     return NextResponse.json(
       {
         success: true,
-        user,
-        filePath,
       },
       { status: 200 },
     );

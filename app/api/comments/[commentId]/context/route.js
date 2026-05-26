@@ -4,9 +4,14 @@ import { connectDB } from "@/lib/db";
 import Comment from "@/models/Comment";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
+import Post from "@/models/Post";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET(req, { params }) {
   await connectDB();
+
+  const session = await getServerSession(authOptions);
 
   const { commentId } = await params;
 
@@ -17,6 +22,21 @@ export async function GET(req, { params }) {
   const comment = await Comment.findById(commentId);
 
   if (!comment || comment.isDeleted) {
+    return NextResponse.json({ error: "Comment not found" }, { status: 404 });
+  }
+
+  const post = await Post.findById(comment.post).select(
+    "author status isDeleted",
+  );
+
+  if (!post || post.isDeleted) {
+    return NextResponse.json({ error: "Post not found" }, { status: 404 });
+  }
+
+  const canAccess =
+    post.status === "published" || session?.user?.id === post.author.toString();
+
+  if (!canAccess) {
     return NextResponse.json({ error: "Comment not found" }, { status: 404 });
   }
 
@@ -57,6 +77,16 @@ export async function GET(req, { params }) {
     );
 
     if (!parent) break;
+
+    // prevent cross-post chain corruption
+    if (parent.post.toString() !== comment.post.toString()) {
+      break;
+    }
+
+    // defensive loop protection
+    if (parent._id.toString() === current._id.toString()) {
+      break;
+    }
 
     let profileImageUrl = null;
 

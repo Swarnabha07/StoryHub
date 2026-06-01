@@ -88,6 +88,7 @@ export async function PUT(req) {
     // 4️ Check username uniqueness (excluding self)
     const existingUser = await User.findOne({
       username: cleanUsername,
+      isDeleted: false,
       _id: { $ne: session.user.id },
     });
 
@@ -99,7 +100,10 @@ export async function PUT(req) {
 
     // 5️ Update allowed fields only
     const updatedUser = await User.findByIdAndUpdate(
-      session.user.id,
+      {
+        _id: session.user.id,
+        isDeleted: false,
+      },
       {
         name: cleanName,
         username: cleanUsername,

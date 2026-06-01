@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { connectDB } from "@/lib/db";
 import User from "@/models/User";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { fetchUser } from "@/actions/useractions";
+import { getSignedProfileImage } from "@/actions/getSignedProfileImage";
 
 export default async function Page({ params }) {
   const { username } = await params;
@@ -11,7 +13,7 @@ export default async function Page({ params }) {
     `${process.env.NEXT_PUBLIC_URL}/api/posts/user/${username}`,
     {
       cache: "no-store", // always fresh for blog content
-    }
+    },
   );
 
   const { posts } = await res.json();
@@ -24,7 +26,7 @@ export default async function Page({ params }) {
   if (session?.user?.id) {
     await connectDB();
     const user = await User.findById(session.user.id).select(
-      "bookmarks following"
+      "bookmarks following",
     );
 
     if (user?.bookmarks) {
@@ -36,11 +38,29 @@ export default async function Page({ params }) {
     }
   }
 
+  const currentUser = await fetchUser(username);
+
+  if (currentUser.error) {
+    return (
+      <div className="min-h-screen bg-[#FFFDF9]">
+        <UserPage
+          currentUser={null}
+          posts={posts}
+          bookmarkedIds={[...bookmarkedSet]}
+          followingIds={[...followingSet]}
+        />
+      </div>
+    );
+  }
+
+  const images = await getSignedProfileImage(currentUser._id);
+
   return (
     <div className="min-h-screen bg-[#FFFDF9]">
       <UserPage
         posts={posts}
-        username={username}
+        currentUser={currentUser}
+        images={images}
         bookmarkedIds={[...bookmarkedSet]}
         followingIds={[...followingSet]}
       />

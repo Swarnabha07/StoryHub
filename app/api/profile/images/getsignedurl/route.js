@@ -3,16 +3,18 @@ import User from "@/models/User";
 import { supabaseAdmin } from "@/lib/supabase/supabaseAdmin";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET(request) {
   try {
     // Get userId from query string
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get("userId");
+    const session = await getServerSession(authOptions);
 
-    if (!userId) {
-      return NextResponse.json({ error: "userId required" }, { status: 400 });
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const userId = session.user.id;
 
     // Validate Mongo ObjectId
     if (!mongoose.Types.ObjectId.isValid(userId)) {

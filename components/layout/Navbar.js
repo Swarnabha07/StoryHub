@@ -32,7 +32,7 @@ const Navbar = ({
     async function loadImages() {
       try {
         const res = await fetch(
-          `/api/profile/images/getsignedurl?userId=${session?.user?.id}`,
+          `/api/profile/images/getsignedurl`,
         );
         const data = await res.json();
 

@@ -87,7 +87,9 @@ export async function GET(req) {
         }
 
         return {
-          ...user.toObject(),
+          _id: user._id.toString(),
+          username: user.username,
+          name: user.name,
           profileImageUrl,
         };
       }),
@@ -108,12 +110,18 @@ export async function GET(req) {
           : null;
 
         return {
-          ...post.toObject(),
+          _id: post._id.toString(),
+          title: post.title,
+          slug: post.slug,
+          content: post.content,
+          tags: post.tags,
+          excerpt: post.excerpt,
           publishedDate: post.publishedAt
             ? post.publishedAt.toDateString()
             : null,
           author: {
-            ...post.author.toObject(),
+            username: post.author.username,
+            name: post.author.name,
             profileImageUrl,
           },
           coverImageUrl,

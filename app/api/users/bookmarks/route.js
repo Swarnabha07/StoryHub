@@ -43,18 +43,36 @@ export async function GET(req) {
 
     const enrichedPosts = await Promise.all(
       posts.map(async (post) => {
-        const obj = post.toObject();
+        let profileImageUrl = null;
 
-        obj.coverImageUrl = post.coverImagePath
+        if (post.author?.profileImagePath) {
+          const signedImage = await getSignedProfileImage(post.author._id);
+          profileImageUrl = signedImage?.profileImage || null;
+        }
+
+        const coverImageUrl = post.coverImagePath
           ? await getSignedPostImage(post.coverImagePath)
           : null;
 
-        if (post.author?.profileImagePath) {
-          const signed = await getSignedProfileImage(post.author._id);
-          obj.author.profileImageUrl = signed?.profileImage || null;
-        }
-
-        return obj;
+        return {
+          _id: post._id.toString(),
+          title: post.title,
+          slug: post.slug,
+          content: post.content,
+          tags: post.tags,
+          excerpt: post.excerpt,
+          publishedDate: post.publishedAt
+            ? post.publishedAt.toDateString()
+            : null,
+          author: {
+            username: post.author.username,
+            name: post.author.name,
+            profileImageUrl,
+          },
+          likes: post.likes,
+          likesCount: post.likesCount,
+          coverImageUrl,
+        };
       }),
     );
 

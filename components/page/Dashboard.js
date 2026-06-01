@@ -10,7 +10,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Camera } from "lucide-react";
 import AvatarUpload from "../shared/profile/AvatarUpload";
-import { fetchUser } from "@/actions/useractions";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 
 const lora = Lora({
@@ -18,11 +17,15 @@ const lora = Lora({
   subsets: ["latin"],
 });
 
-const Dashboard = () => {
+const Dashboard = ({ currentUser }) => {
   const { data: session, status, update } = useSession();
   const { isSidebarOpen, setIsSidebarOpen } = useStore();
   const router = useRouter();
-  const [form, setForm] = useState({ name: "", username: "", bio: "" });
+  const [form, setForm] = useState({
+    name: currentUser?.name || "",
+    username: currentUser?.username || "",
+    bio: currentUser?.bio || "",
+  });
   const [images, setImages] = useState({
     profileImage: null,
     coverImage: null,
@@ -33,38 +36,23 @@ const Dashboard = () => {
 
   // REDIRECT UNAUTHENTICATED USERS
   useEffect(() => {
-    if (status === "loading") return;
-
     if (status === "unauthenticated") {
       router.replace("/");
     }
-  }, [status]);
-
-  // FOR FETCHING CURRENT USER FEILDS
-  useEffect(() => {
-    if (!session?.user?.id) return;
-
-    const getData = async () => {
-      const data = await fetchUser(session?.user?.username);
-
-      setForm({
-        name: data.name || session.user.name || "",
-        username: data.username || session.user.username || "",
-        bio: data.bio || session.user.bio || "",
-      });
-    };
-    getData();
-  }, [session?.user?.id]);
+  }, [status, router]);
 
   // FETCH SIGNED URLS ON PAGE LOAD
   useEffect(() => {
-    if (!session?.user?.id) return;
+    if (status === "unauthenticated") {
+      setLoading(false);
+      return;
+    }
+
+    if (status !== "authenticated") return;
 
     async function loadImages() {
       try {
-        const res = await fetch(
-          `/api/profile/images/getsignedurl?userId=${session?.user?.id}`,
-        );
+        const res = await fetch(`/api/profile/images/getsignedurl`);
         const data = await res.json();
 
         setImages({
@@ -79,15 +67,13 @@ const Dashboard = () => {
     }
 
     loadImages();
-  }, [session?.user?.id]);
+  }, [status]);
 
   // HANDLE AFTER Upload
   const refreshSignedUrls = async () => {
-    if (!session?.user?.id) return;
+    if (status !== "authenticated") return;
 
-    const res = await fetch(
-      `/api/profile/images/getsignedurl?userId=${session.user.id}`,
-    );
+    const res = await fetch(`/api/profile/images/getsignedurl`);
     const data = await res.json();
 
     setImages({
@@ -188,7 +174,6 @@ const Dashboard = () => {
           {/* ------------ COVER IMAGE -------------- */}
           <div className="relative w-full h-[350px] group">
             <AvatarUpload
-              userId={session?.user?.id}
               field="coverImage"
               onDone={refreshSignedUrls}
               className="w-full h-full"
@@ -214,7 +199,6 @@ const Dashboard = () => {
           {/* ------------ PROFILE IMAGE -------------- */}
           <div className="absolute -bottom-10  md:-bottom-16 group">
             <AvatarUpload
-              userId={session?.user?.id}
               field="profileImage"
               onDone={refreshSignedUrls}
               className="block"

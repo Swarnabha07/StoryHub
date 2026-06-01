@@ -8,23 +8,23 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useStore } from "@/Store/store";
 import Image from "next/image";
 import Link from "next/link";
-import { fetchUser } from "@/actions/useractions";
 import ProfileOptionsMenu from "../shared/profile/ProfileOptionsMenu";
 import ProfileSkeletonLoader from "../shared/profile/ProfileSkeletonLoader";
 import ProfileNotFound from "../shared/profile/ProfileNotFound";
 import PostCard from "../shared/posts/PostCard";
 import FollowButton from "../shared/profile/FollowButton";
 
-const UserPage = ({ username, posts, bookmarkedIds, followingIds }) => {
+const UserPage = ({
+  currentUser,
+  images,
+  posts,
+  bookmarkedIds,
+  followingIds,
+}) => {
   const { data: session, status } = useSession();
   const { isSidebarOpen, setIsSidebarOpen } = useStore();
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState(null);
-  const [images, setImages] = useState({
-    profileImage: null,
-    coverImage: null,
-  });
-  const [userLoading, setUserLoading] = useState(true);
+
   const [mutualCount, setMutualCount] = useState(null);
   const [mutualPreview, setMutualPreview] = useState([]);
   const [mutualLoading, setMutualLoading] = useState(true);
@@ -35,11 +35,6 @@ const UserPage = ({ username, posts, bookmarkedIds, followingIds }) => {
 
   const isFollowing =
     !!currentUser?._id && followingIds?.includes(currentUser._id);
-
-  useEffect(() => {
-    if (status !== "authenticated") return;
-    getData();
-  }, [status]);
 
   useEffect(() => {
     if (!currentUser?.username) return;
@@ -71,28 +66,6 @@ const UserPage = ({ username, posts, bookmarkedIds, followingIds }) => {
   }, [currentUser?.followersCount]);
 
   useEffect(() => {
-    if (!currentUser?._id) return;
-
-    async function loadImages() {
-      try {
-        const res = await fetch(
-          `/api/profile/images/getsignedurl?userId=${currentUser?._id}`,
-        );
-        const data = await res.json();
-
-        setImages({
-          profileImage: data.profileImage || null,
-          coverImage: data.coverImage || null,
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    loadImages();
-  }, [currentUser?._id]);
-
-  useEffect(() => {
     if (status === "loading") return;
 
     if (status === "unauthenticated") {
@@ -104,20 +77,7 @@ const UserPage = ({ username, posts, bookmarkedIds, followingIds }) => {
     setExpanded(false);
   }, [currentUser?.bio]);
 
-  const getData = async () => {
-    try {
-      let u = await fetchUser(username);
-      if (u.error) {
-        setCurrentUser(null);
-      } else {
-        setCurrentUser(u);
-      }
-    } finally {
-      setUserLoading(false);
-    }
-  };
-
-  if (status === "loading" || userLoading) {
+  if (status === "loading") {
     return (
       <div>
         <Navbar />
@@ -237,7 +197,7 @@ const UserPage = ({ username, posts, bookmarkedIds, followingIds }) => {
 
               {/* CTA */}
               <div className="flex items-center gap-3 mb-1">
-                {currentUser.email === session?.user?.email ? (
+                {currentUser._id === session?.user?.id ? (
                   <Link href="/dashboard">
                     <button className="font-semibold text-xs md:text-lg px-6 md:px-8 py-2 rounded-xl border border-[#5A2A27] text-[#5A2A27] hover:bg-[#5A2A27] hover:text-[#FFFDF9] transition-all duration-200">
                       Edit profile
@@ -314,7 +274,7 @@ const UserPage = ({ username, posts, bookmarkedIds, followingIds }) => {
               </Link>
 
               {/* Mutuals */}
-              {currentUser.email !== session?.user?.email && (
+              {currentUser._id !== session?.user?.id && (
                 <>
                   {mutualLoading ? (
                     <div className="flex items-center gap-3 animate-pulse ml-2">
@@ -367,7 +327,7 @@ const UserPage = ({ username, posts, bookmarkedIds, followingIds }) => {
           <div className="flex flex-col items-center gap-5 w-full">
             {posts.length === 0 ? (
               <div className="w-full">
-                {currentUser.email === session?.user?.email ? (
+                {currentUser._id === session?.user?.id ? (
                   <div className="flex flex-col items-center gap-8 py-16 text-center">
                     <p className="text-gray-400 text-base md:text-lg">
                       Nothing here yet — your stories are waiting.

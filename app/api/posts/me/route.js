@@ -58,16 +58,24 @@ export async function GET(req) {
         : null;
 
       return {
-        ...post,
-        publishedDate: post.publishedAt
-          ? new Date(post.publishedAt).toDateString()
-          : null,
-        author: {
-          ...post.author,
-          profileImageUrl,
-        },
-        coverImageUrl,
-      };
+          _id: post._id.toString(),
+          title: post.title,
+          slug: post.slug,
+          content: post.content,
+          tags: post.tags,
+          excerpt: post.excerpt,
+          publishedDate: post.publishedAt
+            ? post.publishedAt.toDateString()
+            : null,
+          author: {
+            username: post.author.username,
+            name: post.author.name,
+            profileImageUrl,
+          },
+          likes: post.likes,
+          likesCount: post.likesCount,
+          coverImageUrl,
+        };
     }),
   );
 

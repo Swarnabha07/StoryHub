@@ -3,7 +3,6 @@
 import { useState } from "react";
 
 export default function AvatarUpload({
-  userId,
   field = "profileImage", // "profileImage" or "coverImage"
   onDone,
   children,

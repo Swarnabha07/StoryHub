@@ -5,10 +5,19 @@ import User from "@/models/User";
 
 export const fetchUser = async (username) => {
   await connectDB();
-  let u = await User.findOne({ username: username });
-  if (!u) {
-    return { error: "user with this username does not exist" };
+
+  const user = await User.findOne({
+    username,
+    isDeleted: false,
+  }).select("_id name username bio followersCount followingCount");
+
+  if (!user) {
+    return {
+      error: "user not found",
+    };
   }
-  let user = u.toObject({ flattenObjectIds: true });
-  return user;
+
+  return user.toObject({
+    flattenObjectIds: true,
+  });
 };

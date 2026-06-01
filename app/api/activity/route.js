@@ -102,7 +102,8 @@ export async function GET(req) {
             }
 
             return {
-              ...a,
+              _id: a._id,
+              username: a.username,
               profileImageUrl: imageUrl,
             };
           }),
@@ -118,7 +119,8 @@ export async function GET(req) {
         ...activity,
         actor: actor
           ? {
-              ...actor,
+              _id: actor._id,
+              username: actor.username,
               profileImageUrl: actorProfileImageUrl,
             }
           : null,

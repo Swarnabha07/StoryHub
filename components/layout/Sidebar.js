@@ -3,6 +3,7 @@ import { useStore } from "@/Store/store";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Sidebar() {
   const followings = [
@@ -15,6 +16,40 @@ export default function Sidebar() {
   const { setIsSidebarOpen } = useStore();
   const { data: session } = useSession();
   const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogOut = async () => {
+    if (isLoggingOut) return;
+
+    const confirmed = window.confirm(
+      "Are you sure you want to log out from your account? This action will result in logging out of your account from all devices.",
+    );
+
+    if (!confirmed) return;
+
+    setIsLoggingOut(true);
+
+    try {
+      const res = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      if (!res.ok) {
+        throw new Error("Logout API failed");
+      }
+
+      await signOut({
+        callbackUrl: "/",
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error("Logout failed. Please try again", {
+        containerId: "ui",
+      });
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <motion.div
@@ -125,8 +160,9 @@ export default function Sidebar() {
             <span>Settings</span>
           </button>
           <button
-            className="text-red-700 flex items-center  w-full gap-3 px-3 py-2 font-medium text-sm rounded-xl hover:bg-red-50 transition-colors duration-200"
-            onClick={() => signOut()}
+            className="text-red-700 flex items-center  w-full gap-3 px-3 py-2 font-medium text-sm rounded-xl hover:bg-red-50 transition-colors duration-200 disabled:cursor-not-allowed "
+            onClick={() => handleLogOut()}
+            disabled={isLoggingOut}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +173,7 @@ export default function Sidebar() {
             >
               <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
             </svg>
-            <span>Sign out</span>
+            <span>{isLoggingOut ? "Signing out..." : "Sign out"}</span>
           </button>
         </div>
       </div>

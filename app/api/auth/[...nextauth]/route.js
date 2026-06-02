@@ -112,7 +112,13 @@ export const authOptions = {
     async jwt({ token, user, trigger }) {
       // Initial sign in
       if (user) {
-        token.id = user.id; // user.id set above
+        token.id = user.id;
+
+        await connectDB();
+
+        const dbUser = await User.findById(user.id, "sessionVersion");
+
+        token.sessionVersion = dbUser?.sessionVersion ?? 0;
       }
 
       // when useSession().update() is called
@@ -122,7 +128,7 @@ export const authOptions = {
 
         const dbUser = await User.findById(
           token.id,
-          "username name bio providers",
+          "username name bio providers sessionVersion",
         );
 
         if (dbUser) {
@@ -130,6 +136,9 @@ export const authOptions = {
           token.name = dbUser.name;
           token.bio = dbUser.bio;
           token.providers = dbUser.providers;
+
+          // keep token version fresh
+          token.sessionVersion = dbUser.sessionVersion;
         }
       }
       return token;
@@ -137,17 +146,25 @@ export const authOptions = {
 
     // ATTACH DB USER DATA TO SESSION
     async session({ session, token }) {
+      if (!token.id) {
+        return null;
+      }
+
       await connectDB();
 
       const dbUser = await User.findById(
         token.id,
-        "username name bio providers",
+        "username name bio providers sessionVersion",
       );
 
       if (!dbUser) {
         return null;
       }
 
+      // SESSION VERSION VALIDATION
+      if (Number(token.sessionVersion) !== Number(dbUser.sessionVersion)) {
+        return null;
+      }
       session.user.id = token.id;
 
       // Prefer updated token values, fallback to DB
@@ -159,14 +176,15 @@ export const authOptions = {
       return session;
     },
   },
+
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60 * 24, // 1 day
+    maxAge: 60 * 60 * 8, // 8 hours
     updateAge: 60 * 60, // rotate every hour
   },
 
   jwt: {
-    maxAge: 60 * 60 * 24,
+    maxAge: 60 * 60 * 8,
   },
 };
 

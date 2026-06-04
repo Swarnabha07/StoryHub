@@ -57,7 +57,7 @@ const PostPageClient = ({ post }) => {
         )}
       </AnimatePresence>
 
-      <main className="w-full md:max-w-5xl mx-auto px-3 py-7 md:px-6 md:py-14">
+      <main className="w-full md:max-w-5xl mx-auto px-2 py-7 md:px-6 md:py-14">
         {/* Author */}
         <div className="flex items-center justify-between mb-6 md:mb-10 gap-4">
           {/* Left: Author Info */}
@@ -132,6 +132,25 @@ const PostPageClient = ({ post }) => {
               {post.commentsCount}
             </button>
 
+            {/* Post Analytics */}
+            {post.author._id === session?.user?.id && (
+              <button
+                onClick={() => {
+                  router.push(`/posts/${post.slug}/analytics`);
+                }}
+                className={`flex items-center gap-1 text-xs md:text-sm transition-colors duration-200 cursor-pointer text-gray-400 hover:text-[#3db66b]`}
+              >
+                <svg
+                  className="h-5 w-5 md:h-6 md:w-6"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 -960 960 960"
+                  fill="currentColor"
+                >
+                  <path d="M640-160v-280h160v280H640Zm-240 0v-640h160v640H400Zm-240 0v-440h160v440H160Z" />
+                </svg>
+              </button>
+            )}
+
             {/* Bookmark */}
             <BookmarkButton
               postId={post._id}
@@ -143,7 +162,7 @@ const PostPageClient = ({ post }) => {
           </div>
 
           {/* Right: Published Date + Reading Time */}
-          <div className="flex gap-3 md:gap-4 items-center text-[11px] md:text-base">
+          <div className="flex gap-1.5 md:gap-4 items-center text-[11px] md:text-base">
             <span className="text-[11px] md:text-base text-[#8a7f7a]">
               {post.readingTime} min read
             </span>

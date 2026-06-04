@@ -15,7 +15,11 @@ import {
 import CustomTooltip from "./CustomTooltip";
 import FollowersTooltip from "./FollowersTooltip";
 
-export default function StatsChart({ growthData, followersGrowthData }) {
+export default function StatsChart({
+  growthData,
+  followersGrowthData,
+  showAudienceTab = true,
+}) {
   const MAX_ACTIVE = 2;
 
   const [isMobile, setIsMobile] = useState(false);
@@ -144,16 +148,18 @@ export default function StatsChart({ growthData, followersGrowthData }) {
           Engagement
         </button>
 
-        <button
-          onClick={() => setActiveTab("audience")}
-          className={`pb-2 whitespace-nowrap capitalize text-sm md:text-base transition ${
-            activeTab === "audience"
-              ? "border-b-2 border-black font-medium"
-              : "text-gray-500"
-          }`}
-        >
-          Audience
-        </button>
+        {showAudienceTab && (
+          <button
+            onClick={() => setActiveTab("audience")}
+            className={`pb-2 whitespace-nowrap capitalize text-sm md:text-base transition ${
+              activeTab === "audience"
+                ? "border-b-2 border-black font-medium"
+                : "text-gray-500"
+            }`}
+          >
+            Audience
+          </button>
+        )}
       </div>
 
       {/* engagement growth chart */}
@@ -270,7 +276,7 @@ export default function StatsChart({ growthData, followersGrowthData }) {
       )}
 
       {/* Audience Growth */}
-      {activeTab === "audience" && (
+      {showAudienceTab && activeTab === "audience" && (
         <div>
           <h3 className="text-lg md:text-xl font-semibold mb-4">
             Audience Growth

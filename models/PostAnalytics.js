@@ -46,7 +46,7 @@ const PostAnalyticsSchema = new mongoose.Schema(
 );
 
 // prevent duplicate per day per post
-PostAnalyticsSchema.index({ post: 1, date: 1 }, { unique: true });
+PostAnalyticsSchema.index({ post: 1, author: 1, date: 1 }, { unique: true });
 
 export default mongoose.models.PostAnalytics ||
   mongoose.model("PostAnalytics", PostAnalyticsSchema);

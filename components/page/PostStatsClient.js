@@ -8,49 +8,42 @@ import { Lora } from "next/font/google";
 import { useEffect, useState } from "react";
 import StatsCard from "../shared/stats/StatsCard";
 import StatsChart from "../shared/stats/StatsChart";
-import TopPosts from "../shared/stats/TopPosts";
+import { useRouter } from "next/navigation";
 
 const lora = Lora({
   weight: "600",
   subsets: ["latin"],
 });
 
-export default function StatsClient() {
+export default function PostStatsClient({ postId, postSlug }) {
   const { isSidebarOpen, setIsSidebarOpen } = useStore();
-  const [data, setData] = useState(null);
-  const [growthData, setgrowthData] = useState([]);
-  const [followersGrowthData, setfollowersGrowthData] = useState([]);
+  const router = useRouter();
+
+  const [stats, setStats] = useState(null);
+  const [growthData, setGrowthData] = useState([]);
   const [range, setRange] = useState("7d");
 
   useEffect(() => {
     const fetchStatsData = async () => {
-      const res = await fetch("/api/stats");
+      const res = await fetch(`/api/posts/id/${postId}/analytics`);
       const data = await res.json();
-      setData(data.stats);
+      setStats(data.stats);
     };
 
     fetchStatsData();
-  }, []);
+  }, [postId]);
 
   useEffect(() => {
     const fetchGrowthData = async () => {
-      const res = await fetch(`/api/stats/growth?range=${range}`);
+      const res = await fetch(
+        `/api/posts/id/${postId}/analytics/growth?range=${range}`,
+      );
       const data = await res.json();
-      setgrowthData(data?.growth || []);
+      setGrowthData(data.growth || []);
     };
 
     fetchGrowthData();
-  }, [range]);
-
-  useEffect(() => {
-    const fetchFollowersGrowthData = async () => {
-      const res = await fetch(`/api/stats/followers-growth?range=${range}`);
-      const data = await res.json();
-      setfollowersGrowthData(data?.growth || []);
-    };
-
-    fetchFollowersGrowthData();
-  }, [range]);
+  }, [postId, range]);
 
   return (
     <main className=" min-h-screen bg-[#FFFDF9]">
@@ -74,42 +67,58 @@ export default function StatsClient() {
         )}
       </AnimatePresence>
 
+      <button
+        onClick={() => {
+          router.push(`/posts/${postSlug}`);
+        }}
+        className="flex items-center gap-2 relative left-2.5 top-2.5 md:left-5 md:top-5 text-xs md:text-base text-gray-600 hover:text-black font-semibold"
+      >
+        <svg
+          className="h-4 w-4 md:h-6 md:w-6"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 -960 960 960"
+          fill="currentColor"
+        >
+          <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
+        </svg>
+        <p>Back to post</p>
+      </button>
+
       <div className="flex flex-col items-center gap-6 w-full px-0 md:px-8 mx-auto mb-8">
         <h2
           className={`text-2xl md:text-4xl font-bold border-b border-[#a1a1a1] py-2 my-4 ${lora.className}`}
         >
-          Stats
+          Story Insights
         </h2>
 
-        {/* statscard container */}
         <div className="flex flex-wrap justify-center gap-4 md:gap-6 w-full">
           <StatsCard
             title="Total Impressions"
-            value={data?.totalViews}
-            isLoading={!data}
+            value={stats?.totalImpressions}
+            isLoading={!stats}
           />
           <StatsCard
             title="Total Reach"
-            value={data?.totalReach}
-            isLoading={!data}
+            value={stats?.totalReach}
+            isLoading={!stats}
           />
 
           <StatsCard
             title="Total Likes"
-            value={data?.totalLikes}
-            isLoading={!data}
+            value={stats?.totalLikes}
+            isLoading={!stats}
           />
 
           <StatsCard
             title="Total Comments"
-            value={data?.totalComments}
-            isLoading={!data}
+            value={stats?.totalComments}
+            isLoading={!stats}
           />
 
           <StatsCard
             title="Total Engagement Score"
-            value={`${data?.engagementRate}`}
-            isLoading={!data}
+            value={`${stats?.engagementScore}`}
+            isLoading={!stats}
             description="Measures how intensely your audience interacts with your content relative to reach."
           />
         </div>
@@ -137,13 +146,7 @@ export default function StatsClient() {
             Last 30 Days
           </button>
         </div>
-        <StatsChart
-          growthData={growthData}
-          followersGrowthData={followersGrowthData}
-          showAudienceTab={true}
-        />
-
-        <TopPosts posts={data?.topPosts} />
+        <StatsChart growthData={growthData} showAudienceTab={false} />
       </div>
     </main>
   );

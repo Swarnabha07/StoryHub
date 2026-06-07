@@ -30,14 +30,15 @@ export async function PATCH(req, { params }) {
 
     // 3️ Parse body
     const body = await req.json();
-    const { title, content, status, coverImagePath } = body;
+    const { title, content, status, coverImagePath, scheduledFor } = body;
 
     // empty update guard
     if (
       title === undefined &&
       content === undefined &&
       status === undefined &&
-      coverImagePath === undefined
+      coverImagePath === undefined &&
+      scheduledFor === undefined
     ) {
       return NextResponse.json(
         { error: "No fields provided to update" },
@@ -69,7 +70,10 @@ export async function PATCH(req, { params }) {
       (status !== undefined && typeof status !== "string") ||
       (coverImagePath !== undefined &&
         coverImagePath !== null &&
-        typeof coverImagePath !== "string")
+        typeof coverImagePath !== "string") ||
+      (scheduledFor !== undefined &&
+        scheduledFor !== null &&
+        isNaN(new Date(scheduledFor).getTime()))
     ) {
       return NextResponse.json(
         { error: "Invalid input type" },
@@ -114,9 +118,51 @@ export async function PATCH(req, { params }) {
       return NextResponse.json({ error: "Content too large" }, { status: 400 });
     }
 
-    if (status !== undefined && !["draft", "published"].includes(status)) {
+    if (
+      status !== undefined &&
+      !["draft", "scheduled", "published"].includes(status)
+    ) {
       return NextResponse.json(
         { error: "Invalid post status" },
+        { status: 400 },
+      );
+    }
+
+    if (scheduledFor !== undefined && status !== "scheduled") {
+      return NextResponse.json(
+        {
+          error: "scheduledFor can only be used with scheduled status",
+        },
+        { status: 400 },
+      );
+    }
+
+    let scheduleDate = null;
+
+    // Scheduling validations
+    if (status === "scheduled") {
+      if (!scheduledFor) {
+        return NextResponse.json(
+          { error: "Schedule date is required" },
+          { status: 400 },
+        );
+      }
+
+      scheduleDate = new Date(scheduledFor);
+
+      if (scheduleDate <= new Date()) {
+        return NextResponse.json(
+          { error: "Schedule date must be in the future" },
+          { status: 400 },
+        );
+      }
+    }
+
+    if (post.status === "published" && status === "scheduled") {
+      return NextResponse.json(
+        {
+          error: "Published posts must be moved to draft before scheduling",
+        },
         { status: 400 },
       );
     }
@@ -134,12 +180,21 @@ export async function PATCH(req, { params }) {
     }
     if (coverImagePath !== undefined) post.coverImagePath = coverImagePath;
 
-    // 9️ Publish logic
-    if (status !== undefined) {
-      post.status = status;
-      if (status === "published" && !post.publishedAt) {
-        post.publishedAt = new Date();
-      }
+    // 9️ status logic (draft , published , scheduled)
+    if (status === "published") {
+      post.status = "published";
+      post.publishedAt = new Date();
+      post.scheduledFor = null;
+    }
+
+    if (status === "scheduled") {
+      post.status = "scheduled";
+      post.scheduledFor = scheduleDate;
+    }
+
+    if (status === "draft") {
+      post.status = "draft";
+      post.scheduledFor = null;
     }
 
     // 10 Save

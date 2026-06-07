@@ -207,6 +207,7 @@ export default function PostEditor({ initialPost }) {
           postId={initialPost?.id}
           postSlug={initialPost?.slug}
           initialStatus={initialPost?.status}
+          initialScheduledFor={initialPost?.scheduledFor}
         />
 
         <RichTextEditor content={content} onChange={setContent} />

@@ -43,8 +43,14 @@ const PostSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["draft", "published"],
+      enum: ["draft", "scheduled", "published"],
       default: "draft",
+      index: true,
+    },
+
+    scheduledFor: {
+      type: Date,
+      default: null,
       index: true,
     },
 
@@ -114,6 +120,9 @@ const PostSchema = new mongoose.Schema(
 
 // Compound index for profile / author pages
 PostSchema.index({ author: 1, status: 1, createdAt: -1 });
+
+//for schedule posts query
+PostSchema.index({ status: 1, scheduledFor: 1 });
 
 // Prefix search (autocomplete)
 PostSchema.index({ title: 1 });

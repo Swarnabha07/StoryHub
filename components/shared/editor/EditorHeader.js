@@ -86,6 +86,15 @@ export default function EditorHeader({
   async function schedulePost(date) {
     if (!postId) return;
 
+    if (!date) {
+      toast.error("Please select a schedule date", {
+        containerId: "ui",
+      });
+      return;
+    }
+
+    const isoDate = new Date(date).toISOString();
+
     try {
       setPublishing(true);
 
@@ -96,7 +105,7 @@ export default function EditorHeader({
         },
         body: JSON.stringify({
           status: "scheduled",
-          scheduledFor: date,
+          scheduledFor: isoDate,
         }),
       });
 
@@ -107,7 +116,7 @@ export default function EditorHeader({
       }
 
       setStatus("scheduled");
-      setScheduleDate(date);
+      setScheduleDate(isoDate);
 
       toast.success("Post scheduled", {
         containerId: "ui",
@@ -212,7 +221,7 @@ export default function EditorHeader({
           <button
             onClick={() => setShowScheduleModal(true)}
             disabled={!postId || publishing}
-            className="px-4 py-2 rounded-lg border border-gray-300 text-xs md:text-sm font-medium whitespace-nowrap"
+            className="px-4 py-2 rounded-lg border border-gray-300 text-xs md:text-sm font-medium whitespace-nowrap disabled:bg-slate-100 disabled:cursor-not-allowed"
           >
             {status === "scheduled" ? "Reschedule" : "Schedule"}
           </button>

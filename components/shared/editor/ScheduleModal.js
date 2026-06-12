@@ -9,6 +9,18 @@ export default function ScheduleModal({
   status,
   schedulePost,
 }) {
+  function formatForDateTimeInput(date) {
+    const d = new Date(date);
+
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const hours = String(d.getHours()).padStart(2, "0");
+    const minutes = String(d.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
   return (
     <>
       {/* schedule modal */}
@@ -47,8 +59,15 @@ export default function ScheduleModal({
             <div className="flex gap-4">
               <input
                 type="datetime-local"
-                value={scheduleDate ? scheduleDate.slice(0, 16) : ""}
-                onChange={(e) => setScheduleDate(e.target.value)}
+                value={scheduleDate ? formatForDateTimeInput(scheduleDate) : ""}
+                onChange={(e) => {
+                  if (!e.target.value) {
+                    setScheduleDate(null);
+                    return;
+                  }
+
+                  setScheduleDate(new Date(e.target.value).toISOString());
+                }}
                 className="w-full border rounded-lg p-2"
               />
               <button

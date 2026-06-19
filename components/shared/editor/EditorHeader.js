@@ -5,6 +5,7 @@ import { Lora } from "next/font/google";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import Link from "next/link";
 import ScheduleModal from "./ScheduleModal";
+import EditorOptionsMenu from "./EditorOptionsMenu";
 
 const lora = Lora({
   weight: "700",
@@ -176,76 +177,49 @@ export default function EditorHeader({
 
   return (
     <>
-      <div className="flex items-center justify-between gap-4 mb-6">
+      <div className="flex gap-4  md:items-center md:justify-between">
         <input
           type="text"
           placeholder="Story Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className={`text-xl md:text-3xl font-bold outline-none w-full bg-transparent ${lora.className}`}
+          className={`text-lg md:text-3xl font-bold outline-none w-full bg-transparent ${lora.className}`}
         />
 
-        <button
-          onClick={onSaveDraft}
-          disabled={saving}
-          className="px-4 py-2 rounded-lg bg-[#5A2A27] hover:bg-[#3d1917] text-white text-xs md:text-sm font-medium disabled:opacity-60 whitespace-nowrap"
-        >
-          {saving ? "Saving..." : "Save Draft"}
-        </button>
+        <div className="flex items-center gap-2 md:gap-4">
+          {!postId ? (
+            <button
+              onClick={onSaveDraft}
+              disabled={saving}
+              className="px-2 py-1 md:px-4 md:py-2 rounded-sm md:rounded-lg bg-[#5A2A27] hover:bg-[#3d1917] text-white text-xs md:text-sm font-medium disabled:opacity-60 whitespace-nowrap"
+            >
+              {saving ? "Saving..." : "Save Draft"}
+            </button>
+          ) : (
+            <EditorOptionsMenu
+              status={status}
+              publishing={publishing}
+              postId={postId}
+              setShowScheduleModal={setShowScheduleModal}
+              togglePublish={togglePublish}
+              cancelSchedule={cancelSchedule}
+            />
+          )}
 
-        <button
-          onClick={togglePublish}
-          disabled={publishing}
-          className={`px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition  whitespace-nowrap
-          ${
-            !postId
-              ? "bg-slate-100 cursor-not-allowed"
-              : `${
-                  status === "draft"
-                    ? "bg-[#C5A572] text-white hover:bg-[#b89257]"
-                    : "border border-gray-300"
-                }`
-          }
-            `}
-        >
-          {publishing
-            ? "Updating..."
-            : status === "draft"
-              ? "Publish"
-              : status === "published"
-                ? "Unpublish"
-                : "Publish Now"}
-        </button>
-
-        {status !== "published" && (
-          <button
-            onClick={() => setShowScheduleModal(true)}
-            disabled={!postId || publishing}
-            className="px-4 py-2 rounded-lg border border-gray-300 text-xs md:text-sm font-medium whitespace-nowrap disabled:bg-slate-100 disabled:cursor-not-allowed"
-          >
-            {status === "scheduled" ? "Reschedule" : "Schedule"}
-          </button>
-        )}
-
-        {status === "scheduled" && (
-          <button
-            onClick={cancelSchedule}
-            disabled={publishing}
-            className="px-4 py-2 rounded-lg border border-red-300 text-red-600 text-xs md:text-sm font-medium whitespace-nowrap"
-          >
-            Cancel Schedule
-          </button>
-        )}
-
-        <p className="text-xs text-muted-foreground">
-          {saveStatus === "saving" && "Saving..."}
-          {saveStatus === "saved" && "Saved"}
-          {saveStatus === "error" && "Save failed"}
-        </p>
+          <p className="text-[10px] md:text-xs text-muted-foreground">
+            {saveStatus === "saving" && "Saving..."}
+            {saveStatus === "saved" && "Saved"}
+            {saveStatus === "error" && "Save failed"}
+          </p>
+        </div>
       </div>
       {status === "scheduled" && scheduleDate && (
-        <p className="text-xs text-amber-700">
-          Scheduled for {new Date(scheduleDate).toLocaleString()}
+        <p className="text-[10px] md:text-xs text-amber-700">
+          Scheduled for{" "}
+          {new Date(scheduleDate).toLocaleString([], {
+            dateStyle: "medium",
+            timeStyle: "short",
+          })}
         </p>
       )}
 

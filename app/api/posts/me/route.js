@@ -26,11 +26,20 @@ export async function GET(req) {
 
   const skip = (page - 1) * limit;
 
+  if (
+    status !== undefined &&
+    !["all", "draft", "scheduled", "published"].includes(status)
+  ) {
+    return NextResponse.json({ error: "Invalid post status" }, { status: 400 });
+  }
+
   let statusFilter = {};
   if (status === "published") {
     statusFilter = { status: "published" };
   } else if (status === "draft") {
     statusFilter = { status: "draft" };
+  } else if (status === "scheduled") {
+    statusFilter = { status: "scheduled" };
   }
 
   const posts = await Post.find({
@@ -58,24 +67,25 @@ export async function GET(req) {
         : null;
 
       return {
-          _id: post._id.toString(),
-          title: post.title,
-          slug: post.slug,
-          content: post.content,
-          tags: post.tags,
-          excerpt: post.excerpt,
-          publishedDate: post.publishedAt
-            ? post.publishedAt.toDateString()
-            : null,
-          author: {
-            username: post.author.username,
-            name: post.author.name,
-            profileImageUrl,
-          },
-          likes: post.likes,
-          likesCount: post.likesCount,
-          coverImageUrl,
-        };
+        _id: post._id.toString(),
+        title: post.title,
+        slug: post.slug,
+        content: post.content,
+        status: post.status,
+        excerpt: post.excerpt,
+        scheduledFor: post.scheduledFor?.toISOString?.() || post.scheduledFor,
+        publishedDate: post.publishedAt
+          ? new Date(post.publishedAt).toDateString()
+          : null,
+        author: {
+          username: post.author.username,
+          name: post.author.name,
+          profileImageUrl,
+        },
+        likes: post.likes,
+        likesCount: post.likesCount,
+        coverImageUrl,
+      };
     }),
   );
 

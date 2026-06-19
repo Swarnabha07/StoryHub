@@ -16,7 +16,7 @@ const lora = Lora({
   subsets: ["latin"],
 });
 
-const TABS = ["all", "draft", "published"];
+const TABS = ["all", "draft", "published", "scheduled"];
 
 export default function StoriesPageClient({ bookmarkedIds }) {
   const [activeTab, setActiveTab] = useState("all");

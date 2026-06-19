@@ -35,7 +35,7 @@ export default function LikeButton({ postId, initialLiked, initialCount }) {
       }
 
       if (res.status === 403) {
-        alert("Cannot like draft posts");
+        alert("Cannot like unpublished posts");
         throw new Error();
       }
       if (!res.ok) throw new Error();

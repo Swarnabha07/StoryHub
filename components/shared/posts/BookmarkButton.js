@@ -31,7 +31,7 @@ export default function BookmarkButton({ postId, initialBookmarked }) {
       }
 
       if (res.status === 403) {
-        alert("Cannot bookmark draft posts");
+        alert("Cannot bookmark unpublished posts");
         throw new Error();
       }
 

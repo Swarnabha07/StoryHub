@@ -78,10 +78,10 @@ export async function GET(req, { params }) {
       return {
         ...comment,
         createdDate: comment.createdAt ? timeAgo(comment.createdAt) : null,
-         author: {
-            username: comment.author?.username,
-            profileImageUrl,
-          },
+        author: {
+          username: comment.author?.username,
+          profileImageUrl,
+        },
       };
     }),
   );

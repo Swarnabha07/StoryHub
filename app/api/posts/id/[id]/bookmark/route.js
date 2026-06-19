@@ -26,9 +26,9 @@ export async function POST(req, { params }) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    if (post.status === "draft") {
+    if (post.status !== "published") {
       return NextResponse.json(
-        { error: "Cannot bookmark draft posts" },
+        { error: "Cannot bookmark unpublished posts" },
         { status: 403 },
       );
     }

@@ -13,7 +13,6 @@ export default function StatsCard({ title, value, description, isLoading }) {
         p-5
         shadow-sm
         flex flex-col justify-center
-        bg-white
         group
       "
     >

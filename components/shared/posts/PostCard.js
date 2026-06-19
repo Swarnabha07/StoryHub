@@ -93,7 +93,14 @@ export default function PostCard({ post, bookmarkedSet }) {
       {/* Bottom Actions */}
       <div className="flex justify-between items-center mt-4 text-xs md:text-sm text-[#6b625e]">
         <h5 className="font-medium px-1 py-1 rounded-full">
-          {post.publishedDate}
+          {post.scheduledFor
+            ? `Scheduled for ${new Date(post.scheduledFor).toLocaleString([], {
+                dateStyle: "medium",
+                timeStyle: "short",
+              })}`
+            : post.publishedDate
+              ? `Published at ${post.publishedDate}`
+              : "Draft"}
         </h5>
 
         <div className="flex items-center gap-4">

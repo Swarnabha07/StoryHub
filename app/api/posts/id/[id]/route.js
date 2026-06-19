@@ -190,11 +190,13 @@ export async function PATCH(req, { params }) {
     if (status === "scheduled") {
       post.status = "scheduled";
       post.scheduledFor = scheduleDate;
+      post.publishedAt = null;
     }
 
     if (status === "draft") {
       post.status = "draft";
       post.scheduledFor = null;
+      post.publishedAt = null;
     }
 
     // 10 Save

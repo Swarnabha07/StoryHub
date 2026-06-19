@@ -66,7 +66,11 @@ export async function POST(req) {
     const postExists = await Post.findById(postId).select(
       "_id isDeleted status author",
     );
-    if (!postExists || postExists.isDeleted || postExists.status === "draft") {
+    if (
+      !postExists ||
+      postExists.isDeleted ||
+      postExists.status !== "published"
+    ) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 

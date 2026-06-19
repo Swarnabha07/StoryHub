@@ -23,7 +23,7 @@ export async function GET(req, { params }) {
     }
 
     if (
-      post.status === "draft" &&
+      post.status !== "published" &&
       (!session || session.user.id !== post.author._id.toString())
     ) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });

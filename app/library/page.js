@@ -1,11 +1,11 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
-import BookmarksClient from "@/components/page/BookmarksClient";
 import User from "@/models/User";
 import { connectDB } from "@/lib/db";
+import LibraryPageClient from "@/components/page/LibraryPageClient";
 
-export default async function BookmarksPage() {
+export default async function LibraryPage() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
@@ -23,5 +23,5 @@ export default async function BookmarksPage() {
     }
   }
 
-  return <BookmarksClient bookmarkedIds={[...bookmarkedSet]} />;
+  return <LibraryPageClient bookmarkedIds={[...bookmarkedSet]} />;
 }

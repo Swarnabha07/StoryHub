@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { connectDB } from "@/lib/db";
-import User from "@/models/User";
 import Post from "@/models/Post";
 import { getSignedPostImage } from "@/actions/getSignedPostImage";
 import { getSignedProfileImage } from "@/actions/getSignedProfileImage";
@@ -10,6 +9,7 @@ import { authOptions } from "../../auth/[...nextauth]/route";
 export async function GET(req) {
   try {
     const session = await getServerSession(authOptions);
+
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -17,29 +17,27 @@ export async function GET(req) {
     const { searchParams } = req.nextUrl;
 
     const page = Number(searchParams.get("page")) || 1;
-    const limit = Number(searchParams.get("limit")) || 5;
+    const limit = Number(searchParams.get("limit")) || 10;
 
     const skip = (page - 1) * limit;
 
     await connectDB();
 
-    const user = await User.findById(session.user.id).select("bookmarks");
-    if (!user) {
-      return NextResponse.json({ posts: [] }, { status: 200 });
-    }
-
-    const totalBookmarks = user.bookmarks.length;
-
-    const paginatedIds = user.bookmarks
-      .slice()
-      .reverse() // newest first
-      .slice(skip, skip + limit);
-
-    const posts = await Post.find({
-      _id: { $in: paginatedIds },
+    const totalLikedPosts = await Post.countDocuments({
+      likes: session.user.id,
       status: "published",
       isDeleted: false,
-    }).populate("author", "username name profileImagePath bio");
+    });
+
+    const posts = await Post.find({
+      likes: session.user.id,
+      status: "published",
+      isDeleted: false,
+    })
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("author", "username name profileImagePath bio");
 
     const enrichedPosts = await Promise.all(
       posts.map(async (post) => {
@@ -47,6 +45,7 @@ export async function GET(req) {
 
         if (post.author?.profileImagePath) {
           const signedImage = await getSignedProfileImage(post.author._id);
+
           profileImageUrl = signedImage?.profileImage || null;
         }
 
@@ -79,15 +78,17 @@ export async function GET(req) {
     return NextResponse.json(
       {
         posts: enrichedPosts,
-        hasMore: skip + limit < totalBookmarks,
+        total: totalLikedPosts,
+        hasMore: skip + limit < totalLikedPosts,
         page,
       },
       { status: 200 },
     );
   } catch (err) {
-    console.error("Fetch bookmarks error:", err);
+    console.error("Fetch liked library posts error:", err);
+
     return NextResponse.json(
-      { error: "Failed to fetch bookmarks" },
+      { error: "Failed to fetch liked posts" },
       { status: 500 },
     );
   }

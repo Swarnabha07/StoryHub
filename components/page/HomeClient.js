@@ -181,7 +181,7 @@ export default function HomeClient({
                 </h2>
               </div>
               {/* Recommended Topics */}
-              <div className="bg-white border border-[#f0ebe7] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 h-[200px] flex flex-col">
+              <div className="  border border-[#f0ebe7] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 h-[200px] flex flex-col">
                 <h3 className="text-[#5A2A27] font-semibold text-lg mb-3">
                   Recommended Topics
                 </h3>
@@ -206,7 +206,7 @@ export default function HomeClient({
 
               {/* Who to Follow */}
               <div
-                className={`bg-white border border-[#f0ebe7] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 ${suggestedUsers.length === 0 ? "h-[200px]" : "h-[250px]"}  flex flex-col justify-between`}
+                className={`  border border-[#f0ebe7] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 ${suggestedUsers.length === 0 ? "h-[200px]" : "h-[250px]"}  flex flex-col justify-between`}
               >
                 <h3 className="text-[#5A2A27] font-semibold text-lg mb-3">
                   Who to Follow
@@ -263,7 +263,7 @@ export default function HomeClient({
 
               {/* Bookmarks */}
               <div
-                className={`bg-white border border-[#f0ebe7] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 min-h-[200px] max-h-[600px] overflow-y-auto pr-2 flex flex-col`}
+                className={`  border border-[#f0ebe7] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 min-h-[200px] max-h-[600px] overflow-y-auto pr-2 flex flex-col`}
               >
                 <div>
                   <h3 className="text-[#5A2A27] font-semibold text-lg mb-3">
@@ -282,7 +282,7 @@ export default function HomeClient({
                 </div>
                 {recentBookmarkedPosts.length > 0 && (
                   <Link
-                    href={"/bookmarks"}
+                    href={"/library"}
                     className="text-sm text-[#6b625e] mt-auto pt-3 cursor-pointer hover:text-[#8b170f] transition-colors duration-200"
                   >
                     View all bookmarks →

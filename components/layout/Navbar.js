@@ -31,9 +31,7 @@ const Navbar = ({
   useEffect(() => {
     async function loadImages() {
       try {
-        const res = await fetch(
-          `/api/profile/images/getsignedurl`,
-        );
+        const res = await fetch(`/api/profile/images/getsignedurl`);
         const data = await res.json();
 
         setImages({
@@ -200,15 +198,6 @@ const Navbar = ({
         </Link>
       </div>
       <ul className="flex items-center gap-4 md:gap-10 lg:gap-20 ml-auto">
-        <Link href={`/about`}>
-          <li
-            className={`text-lg md:text-xl cursor-pointer hover:underline text-[#1F2937] ${
-              pathname === "/about" ? "underline" : ""
-            }`}
-          >
-            Our Story
-          </li>
-        </Link>
         <li
           onClick={() => {
             setSignInClicked(true);

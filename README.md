@@ -27,7 +27,12 @@ A full-stack blogging platform built with Next.js, featuring real-time interacti
 
 - Like system for posts
 - Bookmark posts for later reading
-- Dedicated bookmarks page
+
+### 📚 Personal Library
+
+- Dedicated library page for logged-in users
+- Bookmarked stories collection
+- Liked stories collection
 
 ### 👥 Social Graph
 

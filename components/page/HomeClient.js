@@ -305,8 +305,8 @@ export default function HomeClient({
         setSignInClicked={setSignInClicked}
       />
       <div className="bg-black h-0.5 opacity-90"></div>
-      <section className="bg-[#FFFDF9] grid grid-cols-3 min-h-screen">
-        <div className="flex justify-center items-center gap-6">
+      <section className="bg-[#FFFDF9] min-h-screen grid lg:grid-cols-3 grid-cols-1">
+        <div className="hidden lg:flex justify-center items-center gap-6">
           <Image
             className="mix-blend-darken rotate-90 opacity-65 mb-32"
             src={`/simpleflower.png`}
@@ -337,26 +337,26 @@ export default function HomeClient({
             )}
           </AnimatePresence>
           <h1
-            className={`text-7xl font-bold ${lora.className} flex flex-col gap-1 text-[#1C1C1C] leading-tight`}
+            className={`text-5xl md:text-7xl font-bold ${lora.className} flex flex-col gap-1 text-[#1C1C1C] leading-tight`}
           >
             <span>Your words.</span>
             <span className="text-[#C5A572]">Your world.</span>
             <span>StoryHub.</span>
           </h1>
 
-          <p className="font-medium text-[#6A6A6A] text-xl tracking-wide">
+          <p className="font-medium text-[#6A6A6A] text-sm md:text-xl tracking-wide">
             Write, share, inspire — all in one hub
           </p>
           <button
             onClick={() => {
               setShowLogin(true);
             }}
-            className="bg-[#C5A572] text-white px-12 py-3 rounded-full cursor-pointer font-semibold text-xl tracking-wide shadow-md hover:bg-[#b9985e] hover:shadow-lg transition-all duration-300"
+            className="bg-[#C5A572] text-white px-6 py-2 md:px-12 md:py-3 rounded-full cursor-pointer font-semibold text-base md:text-xl tracking-wide shadow-md hover:bg-[#b9985e] hover:shadow-lg transition-all duration-300"
           >
             Get Started
           </button>
         </div>
-        <div className="flex justify-end items-center">
+        <div className="hidden lg:flex justify-end items-center">
           <Image
             className="mix-blend-darken"
             src={`/book&pen.png`}
@@ -366,7 +366,238 @@ export default function HomeClient({
           ></Image>
         </div>
       </section>
+
+      {/* What is StoryHub */}
+      <motion.section
+        className="bg-[#FFFDF9] pb-24 px-6"
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.7 }}
+      >
+        <div className="max-w-4xl mx-auto text-center space-y-8">
+          <h2 className={`text-5xl font-bold ${lora.className} text-[#1C1C1C]`}>
+            What is <span className="text-[#C5A572]">StoryHub?</span>
+          </h2>
+
+          <p className="text-xl text-[#6A6A6A] leading-relaxed">
+            StoryHub is a home for writers, thinkers, and storytellers. A place
+            where your ideas find readers, your words find meaning, and your
+            stories become a part of something greater.
+          </p>
+        </div>
+      </motion.section>
+
+      {/* Features */}
+      <motion.section
+        className="bg-[#F8F3E9] py-24 px-6"
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.7 }}
+      >
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2
+              className={`text-5xl font-bold ${lora.className} text-[#1C1C1C]`}
+            >
+              Why Writers Choose StoryHub
+            </h2>
+
+            <p className="mt-4 text-[#6A6A6A] text-lg">
+              Everything you need to write, share, and grow.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <motion.div
+              initial={{ opacity: 0, x: -80 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.6,
+                delay: 0.1,
+              }}
+              className=" bg-white rounded-3xl p-8 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+            >
+              <h3 className="text-xl font-semibold mb-4 text-[#5A2A27]">
+                Connect with Writers
+              </h3>
+
+              <p className="text-[#6A6A6A] leading-relaxed">
+                Discover new writers, follow their journeys, join discussions,
+                and build meaningful connections through stories.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: -80 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.6,
+                delay: 0.2,
+              }}
+              className=" bg-white rounded-3xl p-8 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+            >
+              <h3 className="text-xl font-semibold mb-4 text-[#5A2A27]">
+                Share Your Ideas
+              </h3>
+
+              <p className="text-[#6A6A6A] leading-relaxed">
+                Publish your stories and reach readers around the world.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: -80 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.6,
+                delay: 0.3,
+              }}
+              className="
+  bg-white
+  rounded-3xl
+  p-8
+  shadow-md
+  hover:shadow-xl
+  hover:-translate-y-2
+  transition-all
+  duration-300
+"
+            >
+              <h3 className="text-xl font-semibold mb-4 text-[#5A2A27]">
+                Understand Your Audience
+              </h3>
+
+              <p className="text-[#6A6A6A] leading-relaxed">
+                Track views, engagement, and reader interactions to understand
+                how your stories resonate
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: -80 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.6,
+                delay: 0.4,
+              }}
+              className=" bg-white rounded-3xl p-8 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+            >
+              <h3 className="text-xl font-semibold mb-4 text-[#5A2A27]">
+                Preserve Stories
+              </h3>
+
+              <p className="text-[#6A6A6A] leading-relaxed">
+                Build a personal collection of meaningful stories and revisit
+                the ideas that inspire you.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Vision */}
+      <motion.section
+        className="bg-[#FFFDF9] py-24 px-8"
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.7 }}
+      >
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+          <div>
+            <h2
+              className={`text-5xl font-bold ${lora.className} text-[#5A2A27] mb-6`}
+            >
+              Our Vision
+            </h2>
+
+            <p className="text-[#6A6A6A] leading-relaxed text-lg">
+              We believe stories have the power to move people, shape ideas, and
+              leave a legacy. StoryHub exists to create a calm and elegant space
+              where words take center stage.
+            </p>
+          </div>
+
+          <div className="relative">
+            <div className="bg-[#C5A572] opacity-30 rounded-full w-64 h-64 absolute -top-10 -left-10 blur-3xl"></div>
+
+            <div className="bg-[#5A2A27] opacity-20 rounded-full w-72 h-72 absolute bottom-0 right-0 blur-3xl"></div>
+
+            <div className="relative bg-white rounded-3xl shadow-xl p-8">
+              <h3 className="text-2xl font-semibold mb-5">Our Core Values</h3>
+
+              <ul className="space-y-4 text-[#6A6A6A]">
+                <li>✦ Authenticity in expression</li>
+                <li>✦ Elegance in design</li>
+                <li>✦ Empathy in communication</li>
+                <li>✦ Creativity in storytelling</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Story */}
+      <motion.section
+        className="bg-[#F8F3E9] py-24 px-6"
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.7 }}
+      >
+        <div className="max-w-4xl mx-auto text-center">
+          <h2
+            className={`text-5xl font-bold ${lora.className} text-[#5A2A27] mb-8`}
+          >
+            The Story Behind StoryHub
+          </h2>
+
+          <p className="text-lg text-[#6A6A6A] leading-relaxed">
+            StoryHub was born from a love for timeless writing and thoughtful
+            design. It was built for people who believe every idea deserves to
+            be shared beautifully. The experience combines simplicity and
+            elegance to make writing feel as natural as pen and paper.
+          </p>
+        </div>
+      </motion.section>
+
+      {/* Final CTA */}
+      <motion.section
+        className="bg-[#F6EFE3] py-24 px-6 text-center"
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 0.7 }}
+      >
+        <h2
+          className={`text-5xl font-bold ${lora.className} text-[#1C1C1C] mb-6`}
+        >
+          Your Words. Your Legacy.
+        </h2>
+
+        <p className="max-w-2xl mx-auto text-lg text-[#6A6A6A] leading-relaxed mb-10">
+          Start writing with StoryHub and share your voice with the world —
+          where every story becomes part of something greater.
+        </p>
+
+        <button
+          onClick={() => {
+            setShowLogin(true);
+          }}
+          className="bg-[#C5A572] text-white px-10 py-4 rounded-full text-lg font-semibold shadow-md hover:bg-[#b9985e] hover:shadow-lg transition-all duration-300 cursor-pointer"
+        >
+          Start Writing
+        </button>
+      </motion.section>
+
       <div className="bg-black h-0.5 opacity-90"></div>
+
       <Footer />
     </>
   );

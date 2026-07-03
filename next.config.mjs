@@ -69,7 +69,8 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: `
               default-src 'self';
-              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.lordicon.com;
+              script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://cdn.lordicon.com;
+              worker-src 'self' blob:;
               style-src 'self' 'unsafe-inline';
               img-src 'self' data: https:;
               font-src 'self' data:;

@@ -111,7 +111,7 @@ export default function Error({ error, reset }) {
               className="mx-auto max-w-xl text-base leading-7 text-black/60 md:text-lg"
             >
               Don&apos;t worry — your analytics, posts, and account data are
-              safe. Try refreshing the page or head back to the dashboard.
+              safe. Try refreshing the page or head back to the home page.
             </motion.p>
 
             {/* Buttons */}
@@ -124,7 +124,7 @@ export default function Error({ error, reset }) {
               {/* Retry Button */}
               <button
                 onClick={() => reset()}
-                className="group inline-flex items-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:scale-[1.03] hover:bg-black/90 active:scale-[0.98]"
+                className="group inline-flex items-center gap-2 rounded-full bg-[#5A2A27] px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:scale-[1.03] hover:bg-black/90 active:scale-[0.98]"
               >
                 <RefreshCcw
                   size={16}
@@ -136,7 +136,7 @@ export default function Error({ error, reset }) {
               {/* Home Button */}
               <Link
                 href="/"
-                className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3 text-sm font-medium text-black transition-all duration-300 hover:scale-[1.03] hover:border-black/20 hover:bg-black/[0.02] active:scale-[0.98]"
+                className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3 text-sm font-medium text-[#5A2A27] transition-all duration-300 hover:scale-[1.03] hover:border-black/20 hover:bg-black/[0.02] active:scale-[0.98]"
               >
                 <House size={16} />
                 Go Home

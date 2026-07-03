@@ -15,6 +15,7 @@ import Link from "next/link";
 import FollowButton from "../shared/profile/FollowButton";
 import { useRouter } from "next/navigation";
 import PostResultCard from "../shared/search/PostResultCard";
+import DecorativeSvgs from "../shared/home/DecorativeSvgs";
 
 const lora = Lora({
   weight: "700",
@@ -305,92 +306,129 @@ export default function HomeClient({
         setSignInClicked={setSignInClicked}
       />
       <div className="bg-black h-0.5 opacity-90"></div>
-      <section className="bg-[#FFFDF9] min-h-screen grid lg:grid-cols-3 grid-cols-1">
-        <div className="hidden lg:flex justify-center items-center gap-6">
-          <Image
-            className="mix-blend-darken rotate-90 opacity-65 mb-32"
-            src={`/simpleflower.png`}
-            height={250}
-            width={250}
-            alt="leaf image"
-          ></Image>
-          <Image
-            className="mix-blend-darken rotate-90 opacity-65 mt-32"
-            src={`/leaf.png`}
-            height={250}
-            width={250}
-            alt="leaf image"
-          ></Image>
-        </div>
-        <div className="flex flex-col justify-center items-center gap-14 text-center">
-          <AnimatePresence>
-            {showLogin && (
-              <div
-                onClick={() => {
-                  setShowLogin(false);
-                  setSignInClicked(false);
-                }}
-                className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
-              >
-                <Login />
-              </div>
-            )}
-          </AnimatePresence>
-          <h1
-            className={`text-5xl md:text-7xl font-bold ${lora.className} flex flex-col gap-1 text-[#1C1C1C] leading-tight`}
-          >
-            <span>Your words.</span>
-            <span className="text-[#C5A572]">Your world.</span>
-            <span>StoryHub.</span>
-          </h1>
 
-          <p className="font-medium text-[#6A6A6A] text-sm md:text-xl tracking-wide">
-            Write, share, inspire — all in one hub
-          </p>
-          <button
-            onClick={() => {
-              setShowLogin(true);
-            }}
-            className="bg-[#C5A572] text-white px-6 py-2 md:px-12 md:py-3 rounded-full cursor-pointer font-semibold text-base md:text-xl tracking-wide shadow-md hover:bg-[#b9985e] hover:shadow-lg transition-all duration-300"
-          >
-            Get Started
-          </button>
+      {/* Hero section */}
+      <section className="relative bg-[#FFFDF9] overflow-hidden">
+        {/* Background Glow Blobs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Top Left */}
+          <div
+            className="
+      absolute
+      -top-40
+      -left-40
+      h-[32rem]
+      w-[32rem]
+      rounded-full
+      bg-[#F5D8A7]
+      opacity-50
+      blur-[140px]
+    "
+          />
+
+          {/* Bottom Right */}
+          <div
+            className="
+      absolute
+      -bottom-52
+      -right-44
+      h-[36rem]
+      w-[36rem]
+      rounded-full
+      bg-[#C5A572]
+      opacity-50
+      blur-[170px]
+    "
+          />
+
+          {/* Middle Accent */}
+          <div
+            className="
+      absolute
+      top-[40%]
+      left-1/2
+      -translate-x-1/2
+      -translate-y-1/2
+      h-[40rem]
+      w-[20rem]
+      rounded-full
+      bg-[#E9D2A8]
+      opacity-35
+      blur-[120px]
+    "
+          />
         </div>
-        <div className="hidden lg:flex justify-end items-center">
-          <Image
-            className="mix-blend-darken"
-            src={`/book&pen.png`}
-            height={600}
-            width={600}
-            alt="book and pen image"
-          ></Image>
+
+        {/* Decorative SVG Layer */}
+
+        <DecorativeSvgs />
+
+        <div className="relative z-10">
+          <div className="min-h-screen flex items-center justify-center text-center px-6">
+            
+            <div className="flex flex-col justify-center items-center gap-14 text-center">
+              <AnimatePresence>
+                {showLogin && (
+                  <div
+                    onClick={() => {
+                      setShowLogin(false);
+                      setSignInClicked(false);
+                    }}
+                    className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+                  >
+                    <Login />
+                  </div>
+                )}
+              </AnimatePresence>
+              <h1
+                className={`text-5xl md:text-7xl font-bold ${lora.className} flex flex-col gap-1 text-[#1C1C1C] leading-tight`}
+              >
+                <span>Your words.</span>
+                <span className="text-[#C5A572]">Your world.</span>
+                <span>StoryHub.</span>
+              </h1>
+
+              <p className="font-medium text-[#6A6A6A] text-sm md:text-xl tracking-[0.12em]">
+                Write, share, inspire — all in one hub
+              </p>
+              <button
+                onClick={() => {
+                  setShowLogin(true);
+                }}
+                className="bg-[#C5A572] text-white px-6 py-2 md:px-12 md:py-3 rounded-full cursor-pointer font-semibold text-base md:text-xl tracking-wide shadow-[0_0_35px_rgba(197,165,114,0.25)] hover:bg-[#b9985e] hover:shadow-[0_0_45px_rgba(197,165,114,0.45)] transition-all duration-500"
+              >
+                Get Started
+              </button>
+            </div>
+          </div>
+
+          {/* What is StoryHub */}
+
+          <motion.div
+            className="py-28 max-w-4xl mx-auto px-6 text-center"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.7 }}
+          >
+            <h2
+              className={`text-5xl font-bold ${lora.className} text-[#1C1C1C]`}
+            >
+              What is <span className="text-[#C5A572]">StoryHub?</span>
+            </h2>
+
+            <p className="mt-8 text-xl leading-relaxed text-[#6A6A6A]">
+              StoryHub is a home for writers, thinkers, and storytellers. A
+              place where your ideas find readers, your words find meaning, and
+              your stories become a part of something greater.
+            </p>
+          </motion.div>
         </div>
       </section>
 
-      {/* What is StoryHub */}
-      <motion.section
-        className="bg-[#FFFDF9] pb-24 px-6"
-        initial={{ opacity: 0, y: 60 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.7 }}
-      >
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <h2 className={`text-5xl font-bold ${lora.className} text-[#1C1C1C]`}>
-            What is <span className="text-[#C5A572]">StoryHub?</span>
-          </h2>
-
-          <p className="text-xl text-[#6A6A6A] leading-relaxed">
-            StoryHub is a home for writers, thinkers, and storytellers. A place
-            where your ideas find readers, your words find meaning, and your
-            stories become a part of something greater.
-          </p>
-        </div>
-      </motion.section>
-
       {/* Features */}
       <motion.section
-        className="bg-[#F8F3E9] py-24 px-6"
+        className="relative bg-[#F8F3E9] py-24 px-6 overflow-hidden"
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
@@ -398,9 +436,7 @@ export default function HomeClient({
       >
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2
-              className={`text-5xl font-bold ${lora.className} text-[#1C1C1C]`}
-            >
+            <h2 className={`text-5xl font-bold ${lora.className} text-black`}>
               Why Writers Choose StoryHub
             </h2>
 
@@ -503,7 +539,7 @@ export default function HomeClient({
 
       {/* Vision */}
       <motion.section
-        className="bg-[#FFFDF9] py-24 px-8"
+        className="relative bg-[#FFFDF9] py-24 px-8 overflow-hidden"
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
@@ -545,7 +581,7 @@ export default function HomeClient({
 
       {/* Story */}
       <motion.section
-        className="bg-[#F8F3E9] py-24 px-6"
+        className="relative bg-[#F8F3E9] py-24 px-6 overflow-hidden"
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
@@ -569,15 +605,13 @@ export default function HomeClient({
 
       {/* Final CTA */}
       <motion.section
-        className="bg-[#F6EFE3] py-24 px-6 text-center"
+        className="relative bg-[#F6EFE3] py-24 px-6 text-center overflow-hidden"
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.4 }}
         transition={{ duration: 0.7 }}
       >
-        <h2
-          className={`text-5xl font-bold ${lora.className} text-[#1C1C1C] mb-6`}
-        >
+        <h2 className={`text-5xl font-bold ${lora.className} text-black mb-6`}>
           Your Words. Your Legacy.
         </h2>
 
@@ -590,7 +624,7 @@ export default function HomeClient({
           onClick={() => {
             setShowLogin(true);
           }}
-          className="bg-[#C5A572] text-white px-10 py-4 rounded-full text-lg font-semibold shadow-md hover:bg-[#b9985e] hover:shadow-lg transition-all duration-300 cursor-pointer"
+          className="bg-[#C5A572] text-white px-6 py-2 md:px-12 md:py-3 rounded-full cursor-pointer font-semibold text-base md:text-xl tracking-wide shadow-[0_0_35px_rgba(197,165,114,0.25)] hover:bg-[#b9985e] hover:shadow-[0_0_45px_rgba(197,165,114,0.45)] transition-all duration-500"
         >
           Start Writing
         </button>

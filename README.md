@@ -93,6 +93,7 @@ A full-stack blogging platform built with Next.js, featuring real-time interacti
 - React-Toastify (notifications/toasts)
 - Tiptap (rich text editor)
 - Recharts (analytics & data visualization)
+- Lordicon (interactive animated icons)
 
 ### Backend
 

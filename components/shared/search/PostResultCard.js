@@ -1,10 +1,18 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import DOMPurify from "dompurify";
+import { useEffect, useState } from "react";
+import createDOMPurify from "dompurify";
 
 export default function PostResultCard({ post }) {
   const router = useRouter();
+
+  const [content, setContent] = useState("");
+
+  useEffect(() => {
+    const DOMPurify = createDOMPurify(window);
+    setContent(DOMPurify.sanitize(post.content));
+  }, [post.content]);
 
   return (
     <div
@@ -59,7 +67,7 @@ export default function PostResultCard({ post }) {
           <p
             className="text-xs md:text-base text-[#6b625e] mt-2"
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(post.excerpt || post.content),
+              __html: content,
             }}
           ></p>
         </div>

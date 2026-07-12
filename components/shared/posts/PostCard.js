@@ -4,11 +4,18 @@ import LikeButton from "./LikeButton";
 import BookmarkButton from "./BookmarkButton";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import DOMPurify from "dompurify";
+import { useEffect, useState } from "react";
+import createDOMPurify from "dompurify";
 
 export default function PostCard({ post, bookmarkedSet }) {
   const { data: session } = useSession();
   const router = useRouter();
+  const [content, setContent] = useState("");
+
+  useEffect(() => {
+    const DOMPurify = createDOMPurify(window);
+    setContent(DOMPurify.sanitize(post.content));
+  }, [post.content]);
 
   const likedByMe =
     !!session?.user?.id &&
@@ -69,7 +76,7 @@ export default function PostCard({ post, bookmarkedSet }) {
           <p
             className="text-xs md:text-sm text-[#6b625e] mt-2 line-clamp-3"
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(post.excerpt || post.content),
+              __html: content,
             }}
           ></p>
         </div>

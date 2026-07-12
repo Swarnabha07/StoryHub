@@ -4,62 +4,51 @@ import { Canvas } from "@react-three/fiber";
 import { ContactShadows, Environment, OrbitControls } from "@react-three/drei";
 
 import Book from "./Book";
+import { Suspense } from "react";
 
 export default function Scene() {
   return (
     <Canvas
       shadows
+      style={{ background: "transparent" }}
       dpr={[1, 2]}
       camera={{
-        position: [2.8, 2.1, 5.8],
-        fov: 32,
+        position: [-1.7, 4.0, 5.8],
+        fov: 45,
       }}
       gl={{
         antialias: true,
+        alpha: true,
       }}
     >
-      {/* Background */}
-      <color attach="background" args={["#f7f3eb"]} />
+      <Suspense fallback={null}>
+        {/* Lights */}
+        <directionalLight
+          castShadow
+          position={[6, 8, 5]}
+          intensity={2.8}
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+        />
 
-      {/* -------------------------
-          THREE POINT LIGHTING
-      ------------------------- */}
+        <directionalLight position={[-5, 3, 4]} intensity={1.2} />
+        <directionalLight position={[0, 5, -6]} intensity={1} />
+        <ambientLight intensity={0.45} />
 
-      {/* Key Light */}
-      <directionalLight
-        castShadow
-        position={[6, 8, 5]}
-        intensity={2.8}
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
-      />
+        <Environment preset="studio" />
 
-      {/* Fill Light */}
-      <directionalLight position={[-5, 3, 4]} intensity={1.2} />
+        <Book />
 
-      {/* Rim Light */}
-      <directionalLight position={[0, 5, -6]} intensity={1} />
+        <ContactShadows
+          position={[0, -0.42, 0]}
+          opacity={0.35}
+          blur={2.8}
+          scale={8}
+          far={2}
+        />
+      </Suspense>
 
-      {/* Soft ambient illumination */}
-      <ambientLight intensity={0.45} />
-
-      {/* HDR reflections */}
-      <Environment preset="studio" />
-
-      {/* Book */}
-      <Book />
-
-      {/* Soft floor shadow */}
-      <ContactShadows
-        position={[0, -0.42, 0]}
-        opacity={0.35}
-        blur={2.8}
-        scale={8}
-        far={2}
-      />
-
-      {/* Development only */}
-      <OrbitControls enablePan={false} minDistance={4} maxDistance={8} />
+      {/* <OrbitControls enablePan={false} minDistance={4} maxDistance={8} /> */}
     </Canvas>
   );
 }

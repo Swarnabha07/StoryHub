@@ -31,13 +31,27 @@ export default function Book() {
     // One page animation
     //----------------------------------
 
-    const cycle = 3;
+    const cycle = 3.6;
 
     const progress = (t % cycle) / cycle;
 
+    // Smooth acceleration and deceleration
     const eased = THREE.MathUtils.smootherstep(progress, 0, 1);
 
-    pageRef.current.rotation.z = -Math.PI * eased;
+    // Extra easing near the end
+    const turn = THREE.MathUtils.smoothstep(eased, 0, 1);
+
+    // Rotate from right page to left page
+    pageRef.current.rotation.z = -Math.PI * 0.99 * turn;
+
+    // Lift page while turning.
+    // Peaks at the middle and returns to zero.
+    const lift = Math.sin(progress * Math.PI) * 0.025;
+    pageRef.current.position.y = 0.002 + lift;
+
+    // Shift from the right stack toward the left stack
+    const pageShift = THREE.MathUtils.lerp(0.02, -0.02, turn);
+    pageRef.current.position.x = pageShift;
   });
 
   return (
@@ -49,7 +63,7 @@ export default function Book() {
       <PageStack side="left" />
 
       {/* Animated Page */}
-      <group ref={pageRef} position={[0.02, 0.002, 0]}>
+      <group ref={pageRef} position={[0, 0, 0]}>
         <Page />
       </group>
 

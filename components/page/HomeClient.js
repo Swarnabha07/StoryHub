@@ -360,12 +360,12 @@ export default function HomeClient({
         </div>
 
         {/* Decorative SVG Layer */}
-
-        <DecorativeSvgs />
+        <div className="hidden xl:block">
+          <DecorativeSvgs />
+        </div>
 
         <div className="relative z-10">
           <div className="min-h-screen flex items-center justify-center text-center px-6">
-            
             <div className="flex flex-col justify-center items-center gap-14 text-center">
               <AnimatePresence>
                 {showLogin && (
@@ -381,21 +381,21 @@ export default function HomeClient({
                 )}
               </AnimatePresence>
               <h1
-                className={`text-5xl md:text-7xl font-bold ${lora.className} flex flex-col gap-1 text-[#1C1C1C] leading-tight`}
+                className={`text-4xl md:text-7xl font-bold ${lora.className} flex flex-col gap-1 text-[#1C1C1C] leading-tight`}
               >
                 <span>Your words.</span>
                 <span className="text-[#C5A572]">Your world.</span>
                 <span>StoryHub.</span>
               </h1>
 
-              <p className="font-medium text-[#6A6A6A] text-sm md:text-xl tracking-[0.12em]">
+              <p className="font-medium text-[#6A6A6A] text-xs md:text-xl tracking-[0.12em]">
                 Write, share, inspire — all in one hub
               </p>
               <button
                 onClick={() => {
                   setShowLogin(true);
                 }}
-                className="bg-[#C5A572] text-white px-6 py-2 md:px-12 md:py-3 rounded-full cursor-pointer font-semibold text-base md:text-xl tracking-wide shadow-[0_0_35px_rgba(197,165,114,0.25)] hover:bg-[#b9985e] hover:shadow-[0_0_45px_rgba(197,165,114,0.45)] transition-all duration-500"
+                className="bg-[#C5A572] text-white px-6 py-2 md:px-12 md:py-3 rounded-full cursor-pointer font-semibold text-sm md:text-xl tracking-wide shadow-[0_0_35px_rgba(197,165,114,0.25)] hover:bg-[#b9985e] hover:shadow-[0_0_45px_rgba(197,165,114,0.45)] transition-all duration-500"
               >
                 Get Started
               </button>
@@ -412,12 +412,12 @@ export default function HomeClient({
             transition={{ duration: 0.7 }}
           >
             <h2
-              className={`text-5xl font-bold ${lora.className} text-[#1C1C1C]`}
+              className={`text-3xl md:text-5xl font-bold ${lora.className} text-[#1C1C1C]`}
             >
               What is <span className="text-[#C5A572]">StoryHub?</span>
             </h2>
 
-            <p className="mt-8 text-xl leading-relaxed text-[#6A6A6A]">
+            <p className="mt-8 text-xs md:text-xl leading-relaxed text-[#6A6A6A]">
               StoryHub is a home for writers, thinkers, and storytellers. A
               place where your ideas find readers, your words find meaning, and
               your stories become a part of something greater.
@@ -436,11 +436,11 @@ export default function HomeClient({
       >
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className={`text-5xl font-bold ${lora.className} text-black`}>
+            <h2 className={`text-3xl md:text-5xl font-bold ${lora.className} text-black`}>
               Why Writers Choose StoryHub
             </h2>
 
-            <p className="mt-4 text-[#6A6A6A] text-lg">
+            <p className="mt-4 text-[#6A6A6A] text-sm md:text-lg">
               Everything you need to write, share, and grow.
             </p>
           </div>
@@ -456,11 +456,11 @@ export default function HomeClient({
               }}
               className=" bg-white rounded-3xl p-8 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
             >
-              <h3 className="text-xl font-semibold mb-4 text-[#5A2A27]">
+              <h3 className="text-base md:text-xl font-semibold mb-4 text-[#5A2A27]">
                 Connect with Writers
               </h3>
 
-              <p className="text-[#6A6A6A] leading-relaxed">
+              <p className="text-[#6A6A6A] leading-relaxed text-xs md:text-base">
                 Discover new writers, follow their journeys, join discussions,
                 and build meaningful connections through stories.
               </p>
@@ -476,11 +476,11 @@ export default function HomeClient({
               }}
               className=" bg-white rounded-3xl p-8 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
             >
-              <h3 className="text-xl font-semibold mb-4 text-[#5A2A27]">
+              <h3 className="text-base md:text-xl font-semibold mb-4 text-[#5A2A27]">
                 Share Your Ideas
               </h3>
 
-              <p className="text-[#6A6A6A] leading-relaxed">
+              <p className="text-[#6A6A6A] leading-relaxed text-xs md:text-base">
                 Publish your stories and reach readers around the world.
               </p>
             </motion.div>
@@ -504,11 +504,11 @@ export default function HomeClient({
   duration-300
 "
             >
-              <h3 className="text-xl font-semibold mb-4 text-[#5A2A27]">
+              <h3 className="text-base md:text-xl font-semibold mb-4 text-[#5A2A27]">
                 Understand Your Audience
               </h3>
 
-              <p className="text-[#6A6A6A] leading-relaxed">
+              <p className="text-[#6A6A6A] leading-relaxed text-xs md:text-base">
                 Track views, engagement, and reader interactions to understand
                 how your stories resonate
               </p>
@@ -524,11 +524,11 @@ export default function HomeClient({
               }}
               className=" bg-white rounded-3xl p-8 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
             >
-              <h3 className="text-xl font-semibold mb-4 text-[#5A2A27]">
+              <h3 className="text-base md:text-xl font-semibold mb-4 text-[#5A2A27]">
                 Preserve Stories
               </h3>
 
-              <p className="text-[#6A6A6A] leading-relaxed">
+              <p className="text-[#6A6A6A] leading-relaxed text-xs md:text-base">
                 Build a personal collection of meaningful stories and revisit
                 the ideas that inspire you.
               </p>
@@ -548,12 +548,12 @@ export default function HomeClient({
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-16 items-center">
           <div>
             <h2
-              className={`text-5xl font-bold ${lora.className} text-[#5A2A27] mb-6`}
+              className={`text-3xl md:text-5xl font-bold ${lora.className} text-[#5A2A27] mb-6`}
             >
               Our Vision
             </h2>
 
-            <p className="text-[#6A6A6A] leading-relaxed text-lg">
+            <p className="text-[#6A6A6A] leading-relaxed text-sm md:text-lg">
               We believe stories have the power to move people, shape ideas, and
               leave a legacy. StoryHub exists to create a calm and elegant space
               where words take center stage.
@@ -566,9 +566,9 @@ export default function HomeClient({
             <div className="bg-[#5A2A27] opacity-20 rounded-full w-72 h-72 absolute bottom-0 right-0 blur-3xl"></div>
 
             <div className="relative bg-white rounded-3xl shadow-xl p-8">
-              <h3 className="text-2xl font-semibold mb-5">Our Core Values</h3>
+              <h3 className="text-lg md:text-2xl font-semibold mb-5">Our Core Values</h3>
 
-              <ul className="space-y-4 text-[#6A6A6A]">
+              <ul className="text-sm md:text-base space-y-4 text-[#6A6A6A]">
                 <li>✦ Authenticity in expression</li>
                 <li>✦ Elegance in design</li>
                 <li>✦ Empathy in communication</li>
@@ -589,12 +589,12 @@ export default function HomeClient({
       >
         <div className="max-w-4xl mx-auto text-center">
           <h2
-            className={`text-5xl font-bold ${lora.className} text-[#5A2A27] mb-8`}
+            className={`text-3xl md:text-5xl font-bold ${lora.className} text-[#5A2A27] mb-8`}
           >
             The Story Behind StoryHub
           </h2>
 
-          <p className="text-lg text-[#6A6A6A] leading-relaxed">
+          <p className="text-xs md:text-lg text-[#6A6A6A] leading-relaxed">
             StoryHub was born from a love for timeless writing and thoughtful
             design. It was built for people who believe every idea deserves to
             be shared beautifully. The experience combines simplicity and
@@ -611,11 +611,11 @@ export default function HomeClient({
         viewport={{ once: true, amount: 0.4 }}
         transition={{ duration: 0.7 }}
       >
-        <h2 className={`text-5xl font-bold ${lora.className} text-black mb-6`}>
+        <h2 className={`text-2xl md:text-5xl font-bold ${lora.className} text-black mb-6`}>
           Your Words. Your Legacy.
         </h2>
 
-        <p className="max-w-2xl mx-auto text-lg text-[#6A6A6A] leading-relaxed mb-10">
+        <p className="max-w-2xl mx-auto text-xs md:text-lg text-[#6A6A6A] leading-relaxed mb-10">
           Start writing with StoryHub and share your voice with the world —
           where every story becomes part of something greater.
         </p>
@@ -624,7 +624,7 @@ export default function HomeClient({
           onClick={() => {
             setShowLogin(true);
           }}
-          className="bg-[#C5A572] text-white px-6 py-2 md:px-12 md:py-3 rounded-full cursor-pointer font-semibold text-base md:text-xl tracking-wide shadow-[0_0_35px_rgba(197,165,114,0.25)] hover:bg-[#b9985e] hover:shadow-[0_0_45px_rgba(197,165,114,0.45)] transition-all duration-500"
+          className="bg-[#C5A572] text-white px-6 py-2 md:px-12 md:py-3 rounded-full cursor-pointer font-semibold text-sm md:text-xl tracking-wide shadow-[0_0_35px_rgba(197,165,114,0.25)] hover:bg-[#b9985e] hover:shadow-[0_0_45px_rgba(197,165,114,0.45)] transition-all duration-500"
         >
           Start Writing
         </button>

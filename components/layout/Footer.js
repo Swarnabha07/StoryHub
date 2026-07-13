@@ -5,8 +5,8 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#FFFDF9] flex items-center justify-center px-4 h-16">
-      <p className="text-center">
-        Copyright &copy; {currentYear} StoryHub - All rights reserved!
+      <p className="text-xs md:text-base text-center">
+        Copyright &copy; {currentYear} StoryHub - All rights reserved.
       </p>
     </footer>
   );

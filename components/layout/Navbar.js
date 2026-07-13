@@ -203,7 +203,7 @@ const Navbar = ({
             setSignInClicked(true);
             setShowLogin(true);
           }}
-          className={`text-lg md:text-xl  cursor-pointer hover:underline text-[#1F2937] ${
+          className={`text-base md:text-xl  cursor-pointer hover:underline text-[#1F2937] ${
             signInClicked ? "underline" : ""
           }`}
         >

@@ -70,6 +70,11 @@ A full-stack blogging platform built with Next.js, featuring real-time interacti
 - Most Engaged Posts section highlighting top-performing content
 - Per-post analytics page with detailed metrics and performance insights for individual posts
 
+### 🎨 User Experience
+
+- Custom animated route transition loader powered by a 3D page-turning book
+- Smooth page transitions with polished loading states for improved perceived performance
+
 ### ⏰ Scheduled Publishing
 
 - Schedule posts to be automatically published at a future date and time
@@ -93,6 +98,8 @@ A full-stack blogging platform built with Next.js, featuring real-time interacti
 - React-Toastify (notifications/toasts)
 - Tiptap (rich text editor)
 - Recharts (analytics & data visualization)
+- React Three Fiber (3D rendering)
+- React Three Drei (3D scene helpers)
 - Lordicon (interactive animated icons)
 
 ### Backend

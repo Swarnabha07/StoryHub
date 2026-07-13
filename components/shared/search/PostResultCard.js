@@ -11,8 +11,8 @@ export default function PostResultCard({ post }) {
 
   useEffect(() => {
     const DOMPurify = createDOMPurify(window);
-    setContent(DOMPurify.sanitize(post.content));
-  }, [post.content]);
+    setContent(DOMPurify.sanitize(post.excerpt || post.content));
+  }, [post.excerpt || post.content]);
 
   return (
     <div

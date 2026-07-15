@@ -1,22 +1,39 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
 import User from "@/models/User";
 import { connectDB } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-//for fetching user email preferences
-export async function GET() {
+const preferenceMap = {
+  "email-preferences": "emailPreferences",
+  "in-app-preferences": "inAppPreferences",
+};
+
+const allowedFields = ["comments", "replies", "follows", "likes"];
+
+// GET
+export async function GET(req, { params }) {
   try {
     await connectDB();
 
     const session = await getServerSession(authOptions);
+
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await User.findById(session.user.id).select(
-      "emailPreferences",
-    );
+    const { preferenceType } = await params;
+
+    const preferenceKey = preferenceMap[preferenceType];
+
+    if (!preferenceKey) {
+      return NextResponse.json(
+        { error: "Invalid preference type" },
+        { status: 400 },
+      );
+    }
+
+    const user = await User.findById(session.user.id).select(preferenceKey);
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -24,10 +41,10 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      emailPreferences: user.emailPreferences,
+      preferences: user[preferenceKey],
     });
   } catch (err) {
-    console.error("Fetch email preferences error:", err);
+    console.error("Preference fetch error:", err);
 
     return NextResponse.json(
       { error: "Something went wrong" },
@@ -36,24 +53,35 @@ export async function GET() {
   }
 }
 
-//for updating user email preferences
-export async function PATCH(req) {
+// PATCH
+export async function PATCH(req, { params }) {
   try {
     await connectDB();
 
     const session = await getServerSession(authOptions);
+
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const { preferenceType } = await params;
+
+    const preferenceKey = preferenceMap[preferenceType];
+
+    if (!preferenceKey) {
+      return NextResponse.json(
+        { error: "Invalid preference type" },
+        { status: 400 },
+      );
+    }
+
     const body = await req.json();
 
-    const allowedFields = ["comments", "replies", "follows", "likes"];
     const updateFields = {};
 
     for (const key in body) {
       if (allowedFields.includes(key) && typeof body[key] === "boolean") {
-        updateFields[`emailPreferences.${key}`] = body[key];
+        updateFields[`${preferenceKey}.${key}`] = body[key];
       }
     }
 
@@ -66,20 +94,21 @@ export async function PATCH(req) {
 
     const updatedUser = await User.findByIdAndUpdate(
       session.user.id,
-      { $set: updateFields },
-      { returnDocument: "after", runValidators: true },
+      {
+        $set: updateFields,
+      },
+      {
+        returnDocument: "after",
+        runValidators: true,
+      },
     );
-
-    if (!updatedUser) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
 
     return NextResponse.json({
       success: true,
-      emailPreferences: updatedUser.emailPreferences,
+      preferences: updatedUser[preferenceKey],
     });
   } catch (err) {
-    console.error("Email preferences update error:", err);
+    console.error("Preference update error:", err);
 
     return NextResponse.json(
       { error: "Something went wrong" },

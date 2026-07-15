@@ -2,6 +2,7 @@
 
 import NotificationToast from "@/components/shared/notifications/NotificationToast";
 import useNotificationStream from "@/hooks/useNotificationStream";
+import notificationAggregator from "@/lib/notifications/notificationAggregator";
 import { useStore } from "@/Store/store";
 import { useCallback, useRef } from "react";
 import { Bounce, ToastContainer, toast } from "react-toastify";
@@ -39,9 +40,12 @@ export default function NotificationProvider({ children }) {
       }
 
       if (!toast.isActive(id)) {
-        toast(<NotificationToast actor={actor} message={message} />, {
-          toastId: id,
-          containerId: "activity",
+        notificationAggregator.enqueue({
+          content: <NotificationToast actor={actor} message={message} />,
+          options: {
+            toastId: id,
+            containerId: "activity",
+          },
         });
       }
     },

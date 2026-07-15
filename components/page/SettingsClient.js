@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useStore } from "@/Store/store";
 import { Lora } from "next/font/google";
 import EmailPreferences from "../shared/settings/EmailPreferences";
+import InAppPreferences from "../shared/settings/InAppPreferences";
 
 const lora = Lora({
   weight: "600",
@@ -45,6 +46,8 @@ export default function SettingsClient() {
         </h2>
 
         <EmailPreferences />
+
+        <InAppPreferences />
       </div>
     </main>
   );

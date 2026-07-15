@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import ToggleItem from "./ToggleItem";
 
-export default function EmailPreferences() {
+export default function InAppPreferences() {
   const [preferences, setPreferences] = useState({
     likes: false,
     comments: false,
@@ -18,7 +18,9 @@ export default function EmailPreferences() {
   useEffect(() => {
     const fetchPreferences = async () => {
       try {
-        const res = await fetch("/api/profile/preferenceType/email-preferences");
+        const res = await fetch(
+          "/api/profile/preferenceType/in-app-preferences",
+        );
         const data = await res.json();
 
         if (data?.preferences) {
@@ -47,15 +49,18 @@ export default function EmailPreferences() {
     setSavingKey(key);
 
     try {
-      const res = await fetch("/api/profile/preferenceType/email-preferences", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        "/api/profile/preferenceType/in-app-preferences",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            [key]: newValue,
+          }),
         },
-        body: JSON.stringify({
-          [key]: newValue,
-        }),
-      });
+      );
 
       const data = await res.json();
 
@@ -84,12 +89,12 @@ export default function EmailPreferences() {
 
   return (
     <div className="bg-[#FFFDF9] w-full px-4 py-10 space-y-6 border-b border-[#d3d3d3]">
-      <h2 className="text-2xl font-bold">Email Notification Preferences</h2>
+      <h2 className="text-2xl font-bold">Popup Notification Preferences</h2>
 
       <div className="space-y-4">
         <ToggleItem
           label="Comments"
-          description="Get notified through email when someone comments on your post"
+          description="Get notified through in-app toasts when someone comments on your post"
           checked={preferences.comments}
           onChange={() => handleToggle("comments")}
           loading={savingKey === "comments"}
@@ -97,7 +102,7 @@ export default function EmailPreferences() {
 
         <ToggleItem
           label="Replies"
-          description="Get notified through email when someone replies to your comment"
+          description="Get notified through in-app toasts when someone replies to your comment"
           checked={preferences.replies}
           onChange={() => handleToggle("replies")}
           loading={savingKey === "replies"}
@@ -105,7 +110,7 @@ export default function EmailPreferences() {
 
         <ToggleItem
           label="Follows"
-          description="Get notified through email when someone follows you"
+          description="Get notified through in-app toasts when someone follows you"
           checked={preferences.follows}
           onChange={() => handleToggle("follows")}
           loading={savingKey === "follows"}
@@ -113,7 +118,7 @@ export default function EmailPreferences() {
 
         <ToggleItem
           label="Likes"
-          description="Get notified through email when someone likes your post or comment"
+          description="Get notified through in-app toasts when someone likes your post or comment"
           checked={preferences.likes}
           onChange={() => handleToggle("likes")}
           loading={savingKey === "likes"}

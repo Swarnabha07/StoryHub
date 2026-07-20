@@ -38,9 +38,9 @@ export default function SettingsClient() {
         )}
       </AnimatePresence>
 
-      <div className="flex flex-col items-center gap-6 w-full px-20 mx-auto">
+      <div className="flex flex-col items-center gap-6 w-full px-4 md:px-20 mx-auto">
         <h2
-          className={`text-4xl font-bold border-b border-[#a1a1a1] py-2 my-4 ${lora.className}`}
+          className={`text-2xl md:text-4xl font-bold border-b border-[#a1a1a1] py-2 my-4 ${lora.className}`}
         >
           Settings
         </h2>

@@ -124,7 +124,7 @@ A full-stack blogging platform built with Next.js, featuring real-time interacti
 
 ### Email Infrastructure
 
-- Nodemailer (email sending)
+- Resend (email sending)
 - Mailtrap (email testing in development)
 
 ### API Testing & Development Tools

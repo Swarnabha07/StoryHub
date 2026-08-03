@@ -107,6 +107,9 @@ A full-stack blogging platform built with Next.js, featuring real-time interacti
 - Next.js API Routes
 - Node.js
 
+### Authentication & Authorization
+- NextAuth.js (authentication & session management)
+
 ### Database
 
 - MongoDB
@@ -130,11 +133,6 @@ A full-stack blogging platform built with Next.js, featuring real-time interacti
 ### API Testing & Development Tools
 
 - Postman (API testing)
-
-### State & UX Enhancements
-
-- Debounced autosave system for improved performance and UX
-- Optimistic UI patterns
 
 ## 🌐 Live Demo
 

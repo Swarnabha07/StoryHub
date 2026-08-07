@@ -136,7 +136,7 @@ A full-stack blogging platform built with Next.js, featuring real-time interacti
 
 ## 🌐 Live Demo
 
-https://storyhub-seven.vercel.app/
+[View StoryHub](https://storyhub-seven.vercel.app/)
 
 ## 📦 Installation
 
